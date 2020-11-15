@@ -1,3 +1,5 @@
+# シンプルな第一原理計算コードを書く
+
 ## 概要
 
 - Jupyter Notebook: https://github.com/tamuhey/python_1d_dft
