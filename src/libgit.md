@@ -1,4 +1,4 @@
-## commit dateでファイルをソートする
+# commit dateでファイルをソートする
 
 gitのファイルをcommit dateでソートするのは結構めんどくさい
 
