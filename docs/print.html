@@ -99,7 +99,7 @@
 
     <nav id="sidebar" class="sidebar" aria-label="Table of contents">
         <div class="sidebar-scrollbox">
-            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="1d_dft.html">概要</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
         </div>
         <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
     </nav>
@@ -304,21 +304,446 @@ pub fn tokenize(text: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; {
 <li><a href="https://unicode-org.github.io/icu/userguide/howtouseicu.html">How to use ICU</a></li>
 <li><a href="https://github.com/tc39/proposal-intl-segmenter">Intl.Segmenter: Unicode segmentation in JavaScript</a></li>
 </ul>
+<h1><a class="header" href="#概要-1" id="概要-1">概要</a></h1>
+<ul>
+<li>Jupyter Notebook: https://github.com/tamuhey/python_1d_dft</li>
+<li>第一原理計算の勉強がてら Python コードを書いた</li>
+<li>1 次元調和振動子の Kohn-Sham 方程式を解くことを目指す</li>
+</ul>
+<h1><a class="header" href="#何を計算するか" id="何を計算するか">何を計算するか</a></h1>
+<ul>
+<li>1 次元調和振動子について，下のハミルトニアンの固有値問題を解く</li>
+</ul>
+<p>$$\hat{H}=-\frac{1}{2}\frac{d^2}{dx^2}+v(x)$$
+$$v(x)=v_{Ha}(x)+v_{LDA}(x)+x^2$$</p>
+<h1><a class="header" href="#微分作用素の行列表現" id="微分作用素の行列表現">微分作用素の行列表現</a></h1>
+<ul>
+<li>まずは運動項$\frac{d^2}{dx^2}$の行列表現を求める</li>
+</ul>
+<h2><a class="header" href="#1階微分" id="1階微分">1階微分</a></h2>
+<p>$$(\frac{dy}{dx})_{i}=\frac{y _{i+1}-{y _{i}}}{h}$$</p>
+<p>とするなら
+$$D_{ij}=\frac{\delta_{i+1,j}-\delta_{i,j}}{h}$$
+とすれば
+$$(\frac{dy}{dx}) _ {i}=D_{ij} y _{j}$$
+と書ける．（ただし端は定義できない)</p>
+<p>$\delta_{ij}$はクロネッカーのデルタで，第 3 式はアインシュタイン縮約を用いている</p>
+<h3><a class="header" href="#実装" id="実装">実装</a></h3>
+<pre><code class="language-python">n_grid = 200
+x = np.linspace(-5, 5, n_grid)
+h = x[1] - x[0]
+D = -np.eye(n_grid) + np.diagflat(np.ones(n_grid-1), 1)
+D /= h
+</code></pre>
+<h2><a class="header" href="#2-階微分" id="2-階微分">2 階微分</a></h2>
+<p>上と同じようにして
+$$D^2_{ij}=\frac{\delta_{i+1,j}-2\delta_{i,j}+\delta_{i-1,j}}{h^2}$$</p>
+<p>これは 1 階微分演算子を用いて下のように書ける(転置に注意).
+$$D^2_{ij}=-D_{ik}D_{jk}$$</p>
+<p>(ただし端を適当に処理する必要がある)</p>
+<h3><a class="header" href="#実装-1" id="実装-1">実装</a></h3>
+<ul>
+<li>2 行で書ける(!)</li>
+</ul>
+<pre><code class="language-Python">D2 = D.dot(-D.T)
+D2[-1, -1] = D2[0, 0] # 端を処理
+</code></pre>
+<ul>
+<li>以下のように適当に sin カーブを微分してみると面白いかもしれません</li>
+</ul>
+<pre><code class="language-Python">y = np.sin(x)
+plt.plot(x, y, label=&quot;f&quot;)
+
+# 微分して端を落とす
+plt.plot(x[:-1], D.dot(y)[:-1], label=&quot;D&quot;)
+plt.plot(x[1:-1], D2.dot(y)[1:-1], label=&quot;D2&quot;)
+plt.legend()
+</code></pre>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/5c8004f0-d1af-bd8f-3ee6-4e9d9ddd9eb1.png" alt="sin.png" /></p>
+<h1><a class="header" href="#調和振動子のポテンシャル項" id="調和振動子のポテンシャル項">調和振動子のポテンシャル項</a></h1>
+<ul>
+<li>調和振動子のポテンシャル項$v_{ext}=x^2$を導入する:
+$$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$</li>
+</ul>
+<p>$v_{ext}(x)$の行列表現を$X$とする.
+これは対角行列とすればよい．(1 行で書ける!)</p>
+<pre><code class="language-Python">X = np.diagflat(x**2)
+</code></pre>
+<h2><a class="header" href="#解を求めてみる" id="解を求めてみる">解を求めてみる</a></h2>
+<ul>
+<li>上の２つの項を合わせれば，相互作用のない 1 次元調和振動子の波動関数を求める事ができる</li>
+</ul>
+<pre><code class="language-Python">eig_harm, psi_harm = np.linalg.eigh(-D2/2+X)
+</code></pre>
+<ul>
+<li>試しにエネルギーの低い方から 5 つプロット</li>
+</ul>
+<pre><code class="language-Python">for i in range(5):
+    plt.plot(x, psi_harm[:, i],  label=f&quot;{eig_harm[i]:.4f}&quot;)
+    plt.legend(loc=1)
+</code></pre>
+<h1><a class="header" href="#電子密度" id="電子密度">電子密度</a></h1>
+<ul>
+<li>
+<p>クーロン，ハートリー相互作用や LDA 交換項を入れたいが，これらは密度の汎関数</p>
+</li>
+<li>
+<p>なのでまずは density を考える</p>
+</li>
+<li>
+<p>このとき，波動関数の規格化条件を考える必要がある:
+$$\int \lvert \psi \rvert ^2 dx = 1$$</p>
+</li>
+<li>
+<p>occupation numbers を$f_n$とおけば，density $n(x)$は:
+$$n(x)=\sum_n f_n \lvert \psi(x) \rvert ^2$$</p>
+</li>
+<li>
+<p>電子は各状態につき 2 つまで入ることができる(スピン)</p>
+</li>
+</ul>
+<h2><a class="header" href="#実装-2" id="実装-2">実装</a></h2>
+<pre><code class="language-Python">def integral(x, y, axis=0):
+    dx = x[1] - x[0]
+    return np.sum(y*dx, axis=axis)
+
+def get_nx(num_electron, psi, x):
+    # 規格化
+    I = integral(x, psi**2, axis=0)
+    normed_psi = psi / np.sqrt(I)[None, :]
+    # occupation num
+    fn = [2 for _ in range(num_electron // 2)]
+    if num_electron % 2:
+        fn.append(1)
+    # density
+    res = np.zeros_like(normed_psi[:, 0])
+    for ne, psi in zip(fn, normed_psi.T):
+        res += ne*(psi**2)
+    return res
+</code></pre>
+<h1><a class="header" href="#exchange-energy" id="exchange-energy">Exchange energy</a></h1>
+<ul>
+<li>交換相互作用について考える (電子相関は面倒なので今回はパス)</li>
+<li>local density approximation (LDA) を用いると，以下のような汎関数となる:</li>
+</ul>
+<p>$$E_X^{LDA}[n] = -\frac{3}{4} \left(\frac{3}{\pi}\right)^{1/3} \int n^{4/3} dx$$</p>
+<ul>
+<li>potential はこれを n によって微分することで求まる:</li>
+</ul>
+<p>$$v_X^{LDA}[n] = \frac{\partial E_X^{LDA}}{\partial n} = - \left(\frac{3}{\pi}\right)^{1/3} n^{1/3}$$</p>
+<h2><a class="header" href="#実装-3" id="実装-3">実装</a></h2>
+<pre><code class="language-Python">def get_exchange(nx, x):
+    energy = -3./ 4 * (3./np.pi) ** (1./3) * integral(x, nx**(4./3))
+    potential = -(3./np.pi) ** (1./3) * nx**(1./3)
+    return energy, potential
+</code></pre>
+<h1><a class="header" href="#coulomb-potential" id="coulomb-potential">coulomb potential</a></h1>
+<ul>
+<li>
+<p>1 次元の場合，3 次元の表式をそのまま用いると発散してしまうので，ちょっとずるして以下のように定義する
+$$E_{Ha}=\frac{1}{2}\iint \frac{n(x)n(x')}{\sqrt{(x-x')^2+\varepsilon}}dxdx'$$</p>
+<pre><code>- ただし$\varepsilon$は正の適当に小さい定数
+</code></pre>
+</li>
+<li>
+<p>ポテンシャルは n で微分して:
+$$v_{Ha}=\int \frac{n(x')}{\sqrt{(x-x')^2+\varepsilon}}dx'$$</p>
+</li>
+</ul>
+<h2><a class="header" href="#実装-4" id="実装-4">実装</a></h2>
+<pre><code class="language-Python">def get_hatree(nx, x, eps=1e-1):
+    h = x[1] - x[0]
+    energy = np.sum(nx[None, :] * nx[:,None] * h**2 / np.sqrt((x[None, :]-x[:, None])**2 + eps) / 2)
+    potential = np.sum(nx[None, :] * h / np.sqrt((x[None, :]-x[:, None])**2 + eps), axis=-1)
+    return energy, potential
+</code></pre>
+<ul>
+<li>以上で今回欲しいハミルトニアンは定義できた</li>
+</ul>
+<h1><a class="header" href="#kohn-sham-方程式を解くself-consistency-loop" id="kohn-sham-方程式を解くself-consistency-loop">Kohn-Sham 方程式を解く：Self-consistency loop</a></h1>
+<ul>
+<li>KS 方程式をときたいが，相互作用のない場合のように一発では解けない
+<ul>
+<li>なぜなら，波動関数を求めたいが，ハミルトニアンの中に入っている電子密度は波動関数から導かれているから(循環参照!)</li>
+</ul>
+</li>
+<li>なので self-consistency loop で解く:</li>
+</ul>
+<ol start="0">
+<li>density を適当に初期化</li>
+<li>交換項，クーロン項を求める</li>
+<li>ハミルトニアンを求める</li>
+<li>波動関数と固有値を求める</li>
+<li>収束判定を満たしていない場合，density を計算して 2. へ</li>
+</ol>
+<ul>
+<li>つまり入力と出力が等しくなるまで(self-consistent になるまで)ループを回し続ける</li>
+</ul>
+<pre><code class="language-Python"># max_iter回計算しても収束していなければ失敗
+max_iter = 1000
+
+# エネルギーの変化がenergy_tolerance以下ならば収束とする
+energy_tolerance = 1e-8
+
+# 電子密度初期化
+nx = np.zeros(n_grid)
+
+for i in range(max_iter):
+    # ポテンシャルを求める
+    ex_energy, ex_potential = get_exchange(nx, x)
+    ha_energy, ha_potential = get_hatree(nx, x)
+
+    # Hamiltonian
+    H = -D2 / 2 + np.diagflat(ex_potential+ha_potential+x**2)
+
+    # 波動関数を求める
+    energy, psi = np.linalg.eigh(H)
+
+    # 収束判定 -&gt; もし収束していればおわり
+    if abs(energy_diff) &lt; energy_tolerance:
+        print(&quot;converged!&quot;)
+        break
+
+    # 電子密度を更新する
+    nx = get_nx(num_electron, psi, x)
+else:
+    print(&quot;not converged&quot;)
+</code></pre>
+<ul>
+<li>収束したら，<code>psi</code> や <code>nx</code> をプロットすると面白いかも</li>
+</ul>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/edffd699-b69b-5d90-38d7-3f4b702a36d8.png" alt="psi.png" /></p>
+<h1><a class="header" href="#jupyter-notebook" id="jupyter-notebook">Jupyter Notebook</a></h1>
+<ul>
+<li>https://github.com/tamuhey/python_1d_dft</li>
+</ul>
+<h1><a class="header" href="#動機" id="動機">動機</a></h1>
+<ul>
+<li>DFTの勉強をしたくてこの<a href="http://dcwww.camd.dtu.dk/%7Easkhl/files/python-dft-exercises.pdf">document</a>を見つけたのですが，コードが書かれていなかったので書いてみました.</li>
+</ul>
+<h1><a class="header" href="#参考文献など" id="参考文献など">参考文献など</a></h1>
+<ul>
+<li>http://dcwww.camd.dtu.dk/~askhl/files/python-dft-exercises.pdf</li>
+<li>https://www.researchgate.net/publication/226474665_A_Tutorial_on_Density_Functional_Theory
+<ul>
+<li>より詳しく書かれています</li>
+</ul>
+</li>
+</ul>
+<h1><a class="header" href="#how-to-calculate-the-alignment-between-bert-and-spacy-tokens-effectively-and-robustly" id="how-to-calculate-the-alignment-between-bert-and-spacy-tokens-effectively-and-robustly">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></h1>
+<p><img src="https://gitcdn.link/repo/tamuhey/tokenizations/master/img/demo.png" alt="" /></p>
+<p>site: https://tamuhey.github.io/tokenizations/</p>
+<p>Natural Language Processing (NLP) has made great progress in recent years because of neural networks, which allows us to solve various tasks with end-to-end architecture.
+However, many NLP systems still requires language-specific pre- and post-processing, especially in tokenizations.
+In this article, I describe an algorithm which simplifies calculating of correspondence between tokens (e.g. BERT vs. spaCy), one such process. 
+And I introduce Python and Rust libraries that implement this algorithm.</p>
+<p>Here is the library and the demo site links:</p>
+<ul>
+<li>repo: https://github.com/tamuhey/tokenizations</li>
+<li>demo: https://tamuhey.github.io/tokenizations/</li>
+</ul>
+<h1><a class="header" href="#what-is-alignment-of-tokens-and-why-is-it-necessary" id="what-is-alignment-of-tokens-and-why-is-it-necessary">What is &quot;alignment&quot; of tokens and Why is it necessary?</a></h1>
+<p>Suppose we want to combine BERT-based named entity recognition (NER) model with rule-based NER model buit on top of spaCy.
+Although BERT's NER exhibits <a href="http://nlpprogress.com/english/named_entity_recognition.html">extremely high performance</a>, 
+it is usually combined with rule-based approaches for practical purposes.
+In such cases, what often bothers us is that tokens of spaCy and BERT are different, even if the input sentences are the same.
+For example, let's say the input sentence is &quot;John Johanson 's house&quot;; BERT tokenizes this sentence like <code>[&quot;john&quot;, &quot;johan&quot;, &quot;##son&quot;, &quot;'&quot;, &quot;s&quot;, &quot;house&quot;]</code> and spaCy tokenizes it like <code>[&quot;John&quot;, &quot;Johanson&quot;, &quot;'s&quot;, &quot;house&quot;]</code>.
+In order to combine the outputs, we need to calculate the correspondence between the two different token sequences.
+This correspondence is the &quot;alignment&quot;.</p>
+<h1><a class="header" href="#how-to-calculate-the-alignment" id="how-to-calculate-the-alignment">How to calculate the alignment?</a></h1>
+<p>First, let's sort out the problem.
+Looking at the previous example, it can be said that two different token sequences have the following characteristics:</p>
+<ol>
+<li>Splitted in different offsets</li>
+<li>Normalized (e.g. lowercase, unicode normalization, dropping accents...)</li>
+<li>Added noise (meta symbol '#' in the previous case)</li>
+</ol>
+<p>If the token sequences differ only in <em>1.</em>, it can be easily solved, because we just need to compare the letters in order from the beginning.
+In fact, <code>spacy.gold.align</code>, which <a href="https://github.com/explosion/spaCy/pull/4526">I implemented previously</a>, is based on this algorithm.</p>
+<p>However, when the features <em>2.</em> and <em>3.</em> are taken into account, the problem suddenly becomes more difficult.
+If you want to deal with the previous example, it is relatively easily solved by lowercasing (e.g. A -&gt; a) and removing meta symbols (e.g. &quot;#&quot; -&gt; &quot;&quot;), but this depends on each tokenizers and isn't general-purpose method.
+Of course, we want a generic implementation that <strong>works for any tokenizers</strong>.</p>
+<p>Let's think about how to deal with <em>2.</em> and <em>3.</em>.</p>
+<h2><a class="header" href="#normalization" id="normalization">Normalization</a></h2>
+<p>In order to compare letters, we need to normalize the input tokens at first.
+This is because even though two letters may look the same, the underlying data may be different.
+There are variety of normalization methods which is used in NLP. For example:</p>
+<ul>
+<li><a href="https://unicode.org/faq/normalization.html">Unicode normalizations</a></li>
+<li>Dropping accents (&quot;å&quot; -&gt; &quot;a&quot;)</li>
+<li>Lowercasing (&quot;A&quot; -&gt; &quot;a&quot;)</li>
+</ul>
+<p>Unicode normalizations are defined in Unicode Standard.
+There are 4 types of Unicode normalizations: NFC, NFD, NFKC, NFKD.
+Of these, in NFKD, letters are decomposed based on compatibility, 
+and the number of letter types are the least and the probability 
+of matching is highest among the four methods. (see <a href="https://unicode.org/faq/normalization.html">Unicode document</a> for detail).
+For example, you can detect the letter &quot;a&quot; is a part of &quot;å&quot; with NFKD, but not with NFKC.</p>
+<p><img src="https://user-images.githubusercontent.com/24998666/81841036-c87bce00-9584-11ea-9d8a-e53689f0de7b.png" alt="" /></p>
+<p>Thus, we first normalize the intput tokens in NFKD form. 
+Then, we lowercase all letters because lowercasing is also often used in NLP.</p>
+<h2><a class="header" href="#compare-noisy-texts" id="compare-noisy-texts">Compare noisy texts</a></h2>
+<p>Now we can compare almost all tokens thanks to NFKD and lowercasing, but they still contain some noise (e.g. &quot;#&quot;),
+so we cannot completely compare all letters in tokens.
+How to properly ignore the noises and compare all letters?
+I racked my brain for few days trying to solve this problem.</p>
+<p>Then, I came up with a solution based on a tool that I use every day.
+It is <strong>diff</strong>.
+diff is a tool that compares two texts and outputs the mismatches.
+It is built in <code>git</code> as <code>git diff</code>, and you can display the charcter-level correspondence as follows:</p>
+<p><img src="https://user-images.githubusercontent.com/24998666/81947250-4ac6c980-963b-11ea-86ad-589bc3dad891.png" alt="image" /></p>
+<p>In our case, what we want to know is the agreement part, not the difference, but these are pretty much the same thing.
+So, what kind of algorithms is <code>diff</code> based on?</p>
+<p>According to the <a href="https://git-scm.com/docs/git-diff">git diff documentation</a>, it is based on <a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>.
+Myers' algorithm is one of the dynamic programming methods that computes the shortest path of what is called edit graph.
+It works very fast especially if the difference of the two inputs is small.
+For now, what we want to compare are almost identical, so we can get the correspondence of the letters very quickly.</p>
+<p>In short, it turns out that Myers' algorithm helps us to get the correspondens of the letters in two sequence of tokens, while properly ignoring some noises.</p>
+<h2><a class="header" href="#overview-of-the-algorithm" id="overview-of-the-algorithm">Overview of the algorithm</a></h2>
+<p>The considerations so far have shown that suitale normalizations and character-based diff gives us a generic method for computing
+the alignment of two token sequences.
+Let's summarize the specific steps briefly.</p>
+<p>Let <code>tokens_a</code> and <code>tokens_b</code> be token sequences of type <code>List[str]</code> to be compared. For example, <code>tokens_a = [&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]</code>.</p>
+<ol>
+<li>Normalize all tokens with <code>NFKD</code> and lowercasing.</li>
+</ol>
+<p>For example, <code>&quot;Foo&quot; -&gt; &quot;foo&quot;</code></p>
+<ol start="2">
+<li>Concatenate the tokens into one string and let the results be <code>cat_a</code> and <code>cat_b</code> respectively. </li>
+</ol>
+<p>For example, <code>cat_a = &quot;&quot;.join(tokens_a)</code> in Python.</p>
+<ol start="3">
+<li>Get the character based diff between the strings <code>cat_a</code> and <code>cat_b</code>.</li>
+</ol>
+<p>The character based diff can be calculated with <a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>.</p>
+<ol start="4">
+<li>Converts the caracter-based diff to a token-based diff.</li>
+</ol>
+<p>This is relatively easy to calculate because we know the mapping between the characters and tokens in step 2.</p>
+<h1><a class="header" href="#implementation" id="implementation">Implementation</a></h1>
+<p><a href="https://github.com/tamuhey/tokenizations">Here is the repository</a> that implements this algorithm.
+This library, <code>tokenizations</code>, is implemented with <strong>Rust</strong> and provides a <strong>Python</strong> binding.</p>
+<p>For example, you can use the Python library as follows:</p>
+<pre><code class="language-Python"># `$ pip install pytokenizations` to install the package
+import tokenizations
+
+tokens_a = [&quot;John&quot;, &quot;Johanson&quot;, &quot;'s&quot;, &quot;house&quot;]
+tokens_b = [&quot;john&quot;, &quot;johan&quot;, &quot;##son&quot;, &quot;'&quot;, &quot;s&quot;, &quot;house&quot;]
+a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
+
+for i in range(len(tokens_a)):
+    print(tokens_a[i])
+    for j in a2b[i]:
+        print(&quot;    &quot;, tokens_b[j])
+</code></pre>
+<pre><code>John
+     john
+Johanson
+     johan
+     ##son
+'s
+     '
+     s
+house
+     house
+</code></pre>
+<h1><a class="header" href="#conclusion" id="conclusion">Conclusion</a></h1>
+<p>In this article, I introduced an algorithm to align two token sequences that are produced by two different tokenizers.
+The title mentions spaCy and BERT, but this algorithm can be applied to any tokenizers.
+Also, it can be useful to apply NLP methods to noisy texts which contains HTML tags for example:
+remove the tags, apply the methods, then calculate the alignment for the output and original text.
+Here are the links to the library and demo.</p>
+<ul>
+<li>repo: https://github.com/tamuhey/tokenizations</li>
+<li>demo: https://tamuhey.github.io/tokenizations/</li>
+</ul>
+<h1><a class="header" href="#2つの分かち書きの対応を計算する" id="2つの分かち書きの対応を計算する">2つの分かち書きの対応を計算する</a></h1>
+<p>言語処理をする際，mecabなどのトークナイザを使って分かち書きすることが多いと思います．本記事では，異なるトークナイザの出力（分かち書き）の対応を計算する方法とその実装（<a href="https://github.com/tamuhey/tokenizations">tokenizations</a>）を紹介します．
+例えば以下のような，sentencepieceとBERTの分かち書きの結果の対応を計算する，トークナイザの実装に依存しない方法を見ていきます．</p>
+<pre><code># 分かち書き
+(a) BERT          : ['フ', '##ヘルト', '##ゥス', '##フルク', '条約', 'を', '締結']
+(b) sentencepiece : ['▁', 'フ', 'ベル', 'トゥス', 'ブルク', '条約', 'を', '締結']
+
+# 対応
+a2b: [[1], [2, 3], [3], [4], [5], [6], [7]]
+b2a: [[], [0], [1], [1, 2], [3], [4], [5], [6]]
+</code></pre>
+<h1><a class="header" href="#問題の定義" id="問題の定義">問題の定義</a></h1>
+<p>先ほどの例を見ると，分かち書きが異なると以下のような差異があることがわかります</p>
+<ol>
+<li>トークンの切り方が異なる</li>
+<li>正規化が異なる (例: ブ -&gt; フ)</li>
+<li>制御文字等のノイズが入りうる (例: #, _)</li>
+</ol>
+<p>差異が1.だけなら簡単に対処できそうです．二つの分かち書きについて，1文字ずつ上から比べていけば良いです．実際，以前spaCyに実装した<code>spacy.gold.align</code>(<a href="https://github.com/explosion/spaCy/pull/4526">link</a>)はこの方法で分かち書きを比較します． 
+しかし2.や3.が入ってくると途端にややこしくなります．各トークナイザの実装に依存して良いならば，制御文字を除いたりして対応を計算することができそうですが，あらゆるトークナイザの組み合わせに対してこのやり方で実装するのは骨が折れそうです．
+<a href="https://github.com/explosion/spacy-transformers">spacy-transformers</a>はこの問題に対して，<a href="https://github.com/explosion/spacy-transformers/blob/88814f5f4be7f0d4c784d8500c558d9ba06b9a56/spacy_transformers/_tokenizers.py#L539">ascii文字以外を全部無視する</a>という大胆な方法を採用しています．英語ならばそこそこ動いてくれそうですが，日本語ではほとんど動きません．
+ということで今回解くべき問題は，上記1~3の差異を持つ分かち書きの組みの対応を計算することです．</p>
+<h1><a class="header" href="#正規化" id="正規化">正規化</a></h1>
+<p>言語処理では様々な正規化が用いられます．例えば</p>
+<ul>
+<li><a href="https://unicode.org/reports/tr15/">Unicode正規化</a>: NFC, NFD, NFKC, NFKD</li>
+<li>小文字化</li>
+<li>アクセント削除</li>
+</ul>
+<p>などです．上記一つだけでなく，組み合わせて用いられることも多いです．例えばBERT多言語モデルは小文字化+NFKD+アクセント削除を行なっています.</p>
+<h1><a class="header" href="#対応の計算法" id="対応の計算法">対応の計算法</a></h1>
+<p>2つの分かち書きを<code>A</code>, <code>B</code>とします．例えば<code>A = [&quot;今日&quot;, &quot;は&quot;, &quot;いい&quot;, &quot;天気&quot;, &quot;だ&quot;]</code>となります．以下のようにして対応を計算することができます．</p>
+<ol>
+<li>各トークンをNFKDで正規化し，小文字化をする</li>
+<li><code>A</code>, <code>B</code>のそれぞれのトークンを結合し，2つの文字列<code>Sa</code>, <code>Sb</code>を作る. (例: <code>Sa=&quot;今日はいい天気だ&quot;</code>)</li>
+<li><code>Sa</code>と<code>Sb</code>の編集グラフ上での最短パスを計算する</li>
+<li>最短パスを辿り，<code>Sa</code>と<code>Sb</code>の文字の対応を取得する</li>
+<li>文字の対応からトークンの対応を計算する</li>
+</ol>
+<p>要するに適当に正規化した後に，diffの逆を使って文字の対応を取り，トークンの対応を計算します．肝となるのは3で，これは編集距離のDPと同じ方法で計算でき，例えば<a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>を使えば低コストで計算できます．
+1.でNFKDを採用したのは，Unicode正規化の中でもっとも正規化後の文字集合が小さいからです．つまりヒット率をなるべくあげることができます．例えば&quot;ブ&quot;と&quot;フ&quot;はNFKDでは部分的に対応を取れますが，NFKCでは対応を取れません．</p>
+<pre><code class="language-python">&gt;&gt;&gt; a = unicodedata.normalize(&quot;NFKD&quot;, &quot;フ&quot;)
+&gt;&gt;&gt; b = unicodedata.normalize(&quot;NFKD&quot;, &quot;ブ&quot;)
+&gt;&gt;&gt; print(a in b)
+True
+&gt;&gt;&gt; a = unicodedata.normalize(&quot;NFKC&quot;, &quot;フ&quot;)
+&gt;&gt;&gt; b = unicodedata.normalize(&quot;NFKC&quot;, &quot;ブ&quot;)
+&gt;&gt;&gt; print(a in b)
+False
+</code></pre>
+<h1><a class="header" href="#実装-5" id="実装-5">実装</a></h1>
+<p>実装はこちらに公開しています: <a href="https://github.com/tamuhey/tokenizations">GitHub: tamuhey/tokenizations</a></p>
+<p>中身はRustですが，Pythonバインディングも提供しています．Pythonライブラリは以下のように使えます．</p>
+<pre><code class="language-console">$ pip install pytokenizations
+</code></pre>
+<pre><code class="language-python">&gt;&gt;&gt; import tokenizations
+&gt;&gt;&gt; tokens_a = ['フ', '##ヘルト', '##ゥス', '##フルク', '条約', 'を', '締結']
+&gt;&gt;&gt; tokens_b = ['▁', 'フ', 'ベル', 'トゥス', 'ブルク', '条約', 'を', '締結']
+&gt;&gt;&gt; a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
+&gt;&gt;&gt; print(a2b)
+[[1], [2, 3], [3], [4], [5], [6], [7]]
+&gt;&gt;&gt; print(b2a)
+[[], [0], [1], [1, 2], [3], [4], [5], [6]]
+</code></pre>
+<h1><a class="header" href="#終わりに" id="終わりに">終わりに</a></h1>
+<p>先日，<a href="https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f">Camphr</a>という言語処理ライブラリを公開しましたが，このライブラリの中で<code>pytokenizations</code>を多用しています．transformersとspaCyの分かち書きの対応を計算するためです．おかげで，2つのライブラリを簡単に結合できるようになり，モデルごとのコードを書く必要がなくなりました．地味ですが実用上非常に役に立つ機能だと思います．</p>
 <h2><a class="header" href="#commit-dateでファイルをソートする" id="commit-dateでファイルをソートする">commit dateでファイルをソートする</a></h2>
+<p>gitのファイルをcommit dateでソートするのは結構めんどくさい</p>
 <ul>
 <li>how to
 <ul>
-<li>対象のpathsをrepo.indexで取得
+<li>対象のpathsを<code>repo.index</code>でとってくる
 <ul>
 <li>これはglobとかでもいい</li>
 </ul>
 </li>
-<li>revwalkをtime orderで取得</li>
-<li>各commitに対してtreeを取得し、すべてのpathについて<code>get_path</code>でblob取得</li>
-<li>blob idが異なっていればそのcommitで変更があったということがわかる</li>
+<li>revwalkをtime orderで作る</li>
+<li>各commitに対してtreeを取得し、すべてのpathについて<code>get_path</code>でblobを取得</li>
+<li>blob idが以前のcommitと異なっていればそのcommitで変更があったということがわかる</li>
 </ul>
 </li>
-<li>logの実装を見たが、diffoptsにpathsを設定してparentsとの差分を取得していたので代替似たようなことをしなければならないらしい</li>
+<li>example/logの実装を見たが、diffoptsにpathsを設定してparentsとの差分を取得していたのでだいたい似たようなことをしなければならないらしい
+<ul>
+<li>そもそもblobには日時に関するメタデータが入っていないので、commitからそれを持ってくるしかない</li>
+</ul>
+</li>
+<li>sample: https://github.com/tamuhey/libgit2_example/blob/master/src/bin/ls_tree.rs</li>
 </ul>
 
                 </main>

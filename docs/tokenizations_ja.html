@@ -4,7 +4,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>libgit</title>
+    <title>2つの分かち書きの対応を計算する</title>
     
     
 
@@ -97,7 +97,7 @@
 
     <nav id="sidebar" class="sidebar" aria-label="Table of contents">
         <div class="sidebar-scrollbox">
-            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="1d_dft.html">概要</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item expanded "><a href="libgit.html" class="active">libgit</a></li></ol>
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="1d_dft.html">概要</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item expanded "><a href="tokenizations_ja.html" class="active">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
         </div>
         <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
     </nav>
@@ -176,40 +176,89 @@
 
             <div id="content" class="content">
                 <main>
-                    <h2><a class="header" href="#commit-dateでファイルをソートする" id="commit-dateでファイルをソートする">commit dateでファイルをソートする</a></h2>
-<p>gitのファイルをcommit dateでソートするのは結構めんどくさい</p>
+                    <h1><a class="header" href="#2つの分かち書きの対応を計算する" id="2つの分かち書きの対応を計算する">2つの分かち書きの対応を計算する</a></h1>
+<p>言語処理をする際，mecabなどのトークナイザを使って分かち書きすることが多いと思います．本記事では，異なるトークナイザの出力（分かち書き）の対応を計算する方法とその実装（<a href="https://github.com/tamuhey/tokenizations">tokenizations</a>）を紹介します．
+例えば以下のような，sentencepieceとBERTの分かち書きの結果の対応を計算する，トークナイザの実装に依存しない方法を見ていきます．</p>
+<pre><code># 分かち書き
+(a) BERT          : ['フ', '##ヘルト', '##ゥス', '##フルク', '条約', 'を', '締結']
+(b) sentencepiece : ['▁', 'フ', 'ベル', 'トゥス', 'ブルク', '条約', 'を', '締結']
+
+# 対応
+a2b: [[1], [2, 3], [3], [4], [5], [6], [7]]
+b2a: [[], [0], [1], [1, 2], [3], [4], [5], [6]]
+</code></pre>
+<h1><a class="header" href="#問題の定義" id="問題の定義">問題の定義</a></h1>
+<p>先ほどの例を見ると，分かち書きが異なると以下のような差異があることがわかります</p>
+<ol>
+<li>トークンの切り方が異なる</li>
+<li>正規化が異なる (例: ブ -&gt; フ)</li>
+<li>制御文字等のノイズが入りうる (例: #, _)</li>
+</ol>
+<p>差異が1.だけなら簡単に対処できそうです．二つの分かち書きについて，1文字ずつ上から比べていけば良いです．実際，以前spaCyに実装した<code>spacy.gold.align</code>(<a href="https://github.com/explosion/spaCy/pull/4526">link</a>)はこの方法で分かち書きを比較します． 
+しかし2.や3.が入ってくると途端にややこしくなります．各トークナイザの実装に依存して良いならば，制御文字を除いたりして対応を計算することができそうですが，あらゆるトークナイザの組み合わせに対してこのやり方で実装するのは骨が折れそうです．
+<a href="https://github.com/explosion/spacy-transformers">spacy-transformers</a>はこの問題に対して，<a href="https://github.com/explosion/spacy-transformers/blob/88814f5f4be7f0d4c784d8500c558d9ba06b9a56/spacy_transformers/_tokenizers.py#L539">ascii文字以外を全部無視する</a>という大胆な方法を採用しています．英語ならばそこそこ動いてくれそうですが，日本語ではほとんど動きません．
+ということで今回解くべき問題は，上記1~3の差異を持つ分かち書きの組みの対応を計算することです．</p>
+<h1><a class="header" href="#正規化" id="正規化">正規化</a></h1>
+<p>言語処理では様々な正規化が用いられます．例えば</p>
 <ul>
-<li>how to
-<ul>
-<li>対象のpathsを<code>repo.index</code>でとってくる
-<ul>
-<li>これはglobとかでもいい</li>
+<li><a href="https://unicode.org/reports/tr15/">Unicode正規化</a>: NFC, NFD, NFKC, NFKD</li>
+<li>小文字化</li>
+<li>アクセント削除</li>
 </ul>
-</li>
-<li>revwalkをtime orderで作る</li>
-<li>各commitに対してtreeを取得し、すべてのpathについて<code>get_path</code>でblobを取得</li>
-<li>blob idが以前のcommitと異なっていればそのcommitで変更があったということがわかる</li>
-</ul>
-</li>
-<li>example/logの実装を見たが、diffoptsにpathsを設定してparentsとの差分を取得していたのでだいたい似たようなことをしなければならないらしい
-<ul>
-<li>そもそもblobには日時に関するメタデータが入っていないので、commitからそれを持ってくるしかない</li>
-</ul>
-</li>
-<li>sample: https://github.com/tamuhey/libgit2_example/blob/master/src/bin/ls_tree.rs</li>
-</ul>
+<p>などです．上記一つだけでなく，組み合わせて用いられることも多いです．例えばBERT多言語モデルは小文字化+NFKD+アクセント削除を行なっています.</p>
+<h1><a class="header" href="#対応の計算法" id="対応の計算法">対応の計算法</a></h1>
+<p>2つの分かち書きを<code>A</code>, <code>B</code>とします．例えば<code>A = [&quot;今日&quot;, &quot;は&quot;, &quot;いい&quot;, &quot;天気&quot;, &quot;だ&quot;]</code>となります．以下のようにして対応を計算することができます．</p>
+<ol>
+<li>各トークンをNFKDで正規化し，小文字化をする</li>
+<li><code>A</code>, <code>B</code>のそれぞれのトークンを結合し，2つの文字列<code>Sa</code>, <code>Sb</code>を作る. (例: <code>Sa=&quot;今日はいい天気だ&quot;</code>)</li>
+<li><code>Sa</code>と<code>Sb</code>の編集グラフ上での最短パスを計算する</li>
+<li>最短パスを辿り，<code>Sa</code>と<code>Sb</code>の文字の対応を取得する</li>
+<li>文字の対応からトークンの対応を計算する</li>
+</ol>
+<p>要するに適当に正規化した後に，diffの逆を使って文字の対応を取り，トークンの対応を計算します．肝となるのは3で，これは編集距離のDPと同じ方法で計算でき，例えば<a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>を使えば低コストで計算できます．
+1.でNFKDを採用したのは，Unicode正規化の中でもっとも正規化後の文字集合が小さいからです．つまりヒット率をなるべくあげることができます．例えば&quot;ブ&quot;と&quot;フ&quot;はNFKDでは部分的に対応を取れますが，NFKCでは対応を取れません．</p>
+<pre><code class="language-python">&gt;&gt;&gt; a = unicodedata.normalize(&quot;NFKD&quot;, &quot;フ&quot;)
+&gt;&gt;&gt; b = unicodedata.normalize(&quot;NFKD&quot;, &quot;ブ&quot;)
+&gt;&gt;&gt; print(a in b)
+True
+&gt;&gt;&gt; a = unicodedata.normalize(&quot;NFKC&quot;, &quot;フ&quot;)
+&gt;&gt;&gt; b = unicodedata.normalize(&quot;NFKC&quot;, &quot;ブ&quot;)
+&gt;&gt;&gt; print(a in b)
+False
+</code></pre>
+<h1><a class="header" href="#実装" id="実装">実装</a></h1>
+<p>実装はこちらに公開しています: <a href="https://github.com/tamuhey/tokenizations">GitHub: tamuhey/tokenizations</a></p>
+<p>中身はRustですが，Pythonバインディングも提供しています．Pythonライブラリは以下のように使えます．</p>
+<pre><code class="language-console">$ pip install pytokenizations
+</code></pre>
+<pre><code class="language-python">&gt;&gt;&gt; import tokenizations
+&gt;&gt;&gt; tokens_a = ['フ', '##ヘルト', '##ゥス', '##フルク', '条約', 'を', '締結']
+&gt;&gt;&gt; tokens_b = ['▁', 'フ', 'ベル', 'トゥス', 'ブルク', '条約', 'を', '締結']
+&gt;&gt;&gt; a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
+&gt;&gt;&gt; print(a2b)
+[[1], [2, 3], [3], [4], [5], [6], [7]]
+&gt;&gt;&gt; print(b2a)
+[[], [0], [1], [1, 2], [3], [4], [5], [6]]
+</code></pre>
+<h1><a class="header" href="#終わりに" id="終わりに">終わりに</a></h1>
+<p>先日，<a href="https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f">Camphr</a>という言語処理ライブラリを公開しましたが，このライブラリの中で<code>pytokenizations</code>を多用しています．transformersとspaCyの分かち書きの対応を計算するためです．おかげで，2つのライブラリを簡単に結合できるようになり，モデルごとのコードを書く必要がなくなりました．地味ですが実用上非常に役に立つ機能だと思います．</p>
 
                 </main>
 
                 <nav class="nav-wrapper" aria-label="Page navigation">
                     <!-- Mobile navigation buttons -->
                     
-                    <a rel="prev" href="tokenizations_ja.html" class="mobile-nav-chapters previous"
+                    <a rel="prev" href="tokenizations.html" class="mobile-nav-chapters previous"
                         title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                     
 
+                    
+                    <a rel="next" href="libgit.html" class="mobile-nav-chapters next"
+                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                     
 
                     <div style="clear: both"></div>
@@ -219,12 +268,17 @@
 
         <nav class="nav-wide-wrapper" aria-label="Page navigation">
             
-            <a rel="prev" href="tokenizations_ja.html" class="nav-chapters previous" title="Previous chapter"
+            <a rel="prev" href="tokenizations.html" class="nav-chapters previous" title="Previous chapter"
                 aria-label="Previous chapter" aria-keyshortcuts="Left">
                 <i class="fa fa-angle-left"></i>
             </a>
             
 
+            
+            <a rel="next" href="libgit.html" class="nav-chapters next" title="Next chapter"
+                aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
             
         </nav>
 

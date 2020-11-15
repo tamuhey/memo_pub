@@ -1,0 +1,478 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>概要</title>
+    
+    
+
+
+    <!-- Custom HTML head -->
+    
+
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff" />
+
+    
+    <link rel="icon" href="favicon.svg">
+    
+    
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+    
+    <link rel="stylesheet" href="css/print.css" media="print">
+    
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+    
+    <link rel="stylesheet" href="fonts/fonts.css">
+    
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+    
+
+    
+</head>
+
+<body>
+    <!-- Provide site root to javascript -->
+    <script type="text/javascript">
+        var path_to_root = "";
+        var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+    </script>
+
+    <!-- Work around some values being stored in localStorage wrapped in quotes -->
+    <script type="text/javascript">
+        try {
+            var theme = localStorage.getItem('mdbook-theme');
+            var sidebar = localStorage.getItem('mdbook-sidebar');
+
+            if (theme.startsWith('"') && theme.endsWith('"')) {
+                localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+            }
+
+            if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+            }
+        } catch (e) { }
+    </script>
+
+    <!-- Set the theme before any content is loaded, prevents flash -->
+    <script type="text/javascript">
+        var theme;
+        try { theme = localStorage.getItem('mdbook-theme'); } catch (e) { }
+        if (theme === null || theme === undefined) { theme = default_theme; }
+        var html = document.querySelector('html');
+        html.classList.remove('no-js')
+        html.classList.remove('light')
+        html.classList.add(theme);
+        html.classList.add('js');
+    </script>
+
+    <!-- Hide / unhide sidebar before it is displayed -->
+    <script type="text/javascript">
+        var html = document.querySelector('html');
+        var sidebar = 'hidden';
+        if (document.body.clientWidth >= 1080) {
+            try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch (e) { }
+            sidebar = sidebar || 'visible';
+        }
+        html.classList.remove('sidebar-visible');
+        html.classList.add("sidebar-" + sidebar);
+    </script>
+
+    <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <div class="sidebar-scrollbox">
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item expanded "><a href="1d_dft.html" class="active">概要</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
+        </div>
+        <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+    </nav>
+
+    <div id="page-wrapper" class="page-wrapper">
+
+        <div class="page">
+            
+            <div id="menu-bar-hover-placeholder"></div>
+            <div id="menu-bar" class="menu-bar sticky bordered">
+                <div class="left-buttons">
+                    <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                        <i class="fa fa-paint-brush"></i>
+                    </button>
+                    <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="light">Light (default)</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="rust">Rust</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="coal">Coal</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="navy">Navy</button></li>
+                        <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button>
+                        </li>
+                    </ul>
+                    
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                        aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                        aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    
+                </div>
+
+                <h1 class="menu-title"></h1>
+
+                <div class="right-buttons">
+                    
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    
+                    
+                </div>
+            </div>
+
+            
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                        placeholder="Search this book ..." aria-controls="searchresults-outer"
+                        aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+            
+
+            <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+            <script type="text/javascript">
+                document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                    link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                });
+            </script>
+
+            <div id="content" class="content">
+                <main>
+                    <h1><a class="header" href="#概要" id="概要">概要</a></h1>
+<ul>
+<li>Jupyter Notebook: https://github.com/tamuhey/python_1d_dft</li>
+<li>第一原理計算の勉強がてら Python コードを書いた</li>
+<li>1 次元調和振動子の Kohn-Sham 方程式を解くことを目指す</li>
+</ul>
+<h1><a class="header" href="#何を計算するか" id="何を計算するか">何を計算するか</a></h1>
+<ul>
+<li>1 次元調和振動子について，下のハミルトニアンの固有値問題を解く</li>
+</ul>
+<p>$$\hat{H}=-\frac{1}{2}\frac{d^2}{dx^2}+v(x)$$
+$$v(x)=v_{Ha}(x)+v_{LDA}(x)+x^2$$</p>
+<h1><a class="header" href="#微分作用素の行列表現" id="微分作用素の行列表現">微分作用素の行列表現</a></h1>
+<ul>
+<li>まずは運動項$\frac{d^2}{dx^2}$の行列表現を求める</li>
+</ul>
+<h2><a class="header" href="#1階微分" id="1階微分">1階微分</a></h2>
+<p>$$(\frac{dy}{dx})_{i}=\frac{y _{i+1}-{y _{i}}}{h}$$</p>
+<p>とするなら
+$$D_{ij}=\frac{\delta_{i+1,j}-\delta_{i,j}}{h}$$
+とすれば
+$$(\frac{dy}{dx}) _ {i}=D_{ij} y _{j}$$
+と書ける．（ただし端は定義できない)</p>
+<p>$\delta_{ij}$はクロネッカーのデルタで，第 3 式はアインシュタイン縮約を用いている</p>
+<h3><a class="header" href="#実装" id="実装">実装</a></h3>
+<pre><code class="language-python">n_grid = 200
+x = np.linspace(-5, 5, n_grid)
+h = x[1] - x[0]
+D = -np.eye(n_grid) + np.diagflat(np.ones(n_grid-1), 1)
+D /= h
+</code></pre>
+<h2><a class="header" href="#2-階微分" id="2-階微分">2 階微分</a></h2>
+<p>上と同じようにして
+$$D^2_{ij}=\frac{\delta_{i+1,j}-2\delta_{i,j}+\delta_{i-1,j}}{h^2}$$</p>
+<p>これは 1 階微分演算子を用いて下のように書ける(転置に注意).
+$$D^2_{ij}=-D_{ik}D_{jk}$$</p>
+<p>(ただし端を適当に処理する必要がある)</p>
+<h3><a class="header" href="#実装-1" id="実装-1">実装</a></h3>
+<ul>
+<li>2 行で書ける(!)</li>
+</ul>
+<pre><code class="language-Python">D2 = D.dot(-D.T)
+D2[-1, -1] = D2[0, 0] # 端を処理
+</code></pre>
+<ul>
+<li>以下のように適当に sin カーブを微分してみると面白いかもしれません</li>
+</ul>
+<pre><code class="language-Python">y = np.sin(x)
+plt.plot(x, y, label=&quot;f&quot;)
+
+# 微分して端を落とす
+plt.plot(x[:-1], D.dot(y)[:-1], label=&quot;D&quot;)
+plt.plot(x[1:-1], D2.dot(y)[1:-1], label=&quot;D2&quot;)
+plt.legend()
+</code></pre>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/5c8004f0-d1af-bd8f-3ee6-4e9d9ddd9eb1.png" alt="sin.png" /></p>
+<h1><a class="header" href="#調和振動子のポテンシャル項" id="調和振動子のポテンシャル項">調和振動子のポテンシャル項</a></h1>
+<ul>
+<li>調和振動子のポテンシャル項$v_{ext}=x^2$を導入する:
+$$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$</li>
+</ul>
+<p>$v_{ext}(x)$の行列表現を$X$とする.
+これは対角行列とすればよい．(1 行で書ける!)</p>
+<pre><code class="language-Python">X = np.diagflat(x**2)
+</code></pre>
+<h2><a class="header" href="#解を求めてみる" id="解を求めてみる">解を求めてみる</a></h2>
+<ul>
+<li>上の２つの項を合わせれば，相互作用のない 1 次元調和振動子の波動関数を求める事ができる</li>
+</ul>
+<pre><code class="language-Python">eig_harm, psi_harm = np.linalg.eigh(-D2/2+X)
+</code></pre>
+<ul>
+<li>試しにエネルギーの低い方から 5 つプロット</li>
+</ul>
+<pre><code class="language-Python">for i in range(5):
+    plt.plot(x, psi_harm[:, i],  label=f&quot;{eig_harm[i]:.4f}&quot;)
+    plt.legend(loc=1)
+</code></pre>
+<h1><a class="header" href="#電子密度" id="電子密度">電子密度</a></h1>
+<ul>
+<li>
+<p>クーロン，ハートリー相互作用や LDA 交換項を入れたいが，これらは密度の汎関数</p>
+</li>
+<li>
+<p>なのでまずは density を考える</p>
+</li>
+<li>
+<p>このとき，波動関数の規格化条件を考える必要がある:
+$$\int \lvert \psi \rvert ^2 dx = 1$$</p>
+</li>
+<li>
+<p>occupation numbers を$f_n$とおけば，density $n(x)$は:
+$$n(x)=\sum_n f_n \lvert \psi(x) \rvert ^2$$</p>
+</li>
+<li>
+<p>電子は各状態につき 2 つまで入ることができる(スピン)</p>
+</li>
+</ul>
+<h2><a class="header" href="#実装-2" id="実装-2">実装</a></h2>
+<pre><code class="language-Python">def integral(x, y, axis=0):
+    dx = x[1] - x[0]
+    return np.sum(y*dx, axis=axis)
+
+def get_nx(num_electron, psi, x):
+    # 規格化
+    I = integral(x, psi**2, axis=0)
+    normed_psi = psi / np.sqrt(I)[None, :]
+    # occupation num
+    fn = [2 for _ in range(num_electron // 2)]
+    if num_electron % 2:
+        fn.append(1)
+    # density
+    res = np.zeros_like(normed_psi[:, 0])
+    for ne, psi in zip(fn, normed_psi.T):
+        res += ne*(psi**2)
+    return res
+</code></pre>
+<h1><a class="header" href="#exchange-energy" id="exchange-energy">Exchange energy</a></h1>
+<ul>
+<li>交換相互作用について考える (電子相関は面倒なので今回はパス)</li>
+<li>local density approximation (LDA) を用いると，以下のような汎関数となる:</li>
+</ul>
+<p>$$E_X^{LDA}[n] = -\frac{3}{4} \left(\frac{3}{\pi}\right)^{1/3} \int n^{4/3} dx$$</p>
+<ul>
+<li>potential はこれを n によって微分することで求まる:</li>
+</ul>
+<p>$$v_X^{LDA}[n] = \frac{\partial E_X^{LDA}}{\partial n} = - \left(\frac{3}{\pi}\right)^{1/3} n^{1/3}$$</p>
+<h2><a class="header" href="#実装-3" id="実装-3">実装</a></h2>
+<pre><code class="language-Python">def get_exchange(nx, x):
+    energy = -3./ 4 * (3./np.pi) ** (1./3) * integral(x, nx**(4./3))
+    potential = -(3./np.pi) ** (1./3) * nx**(1./3)
+    return energy, potential
+</code></pre>
+<h1><a class="header" href="#coulomb-potential" id="coulomb-potential">coulomb potential</a></h1>
+<ul>
+<li>
+<p>1 次元の場合，3 次元の表式をそのまま用いると発散してしまうので，ちょっとずるして以下のように定義する
+$$E_{Ha}=\frac{1}{2}\iint \frac{n(x)n(x')}{\sqrt{(x-x')^2+\varepsilon}}dxdx'$$</p>
+<pre><code>- ただし$\varepsilon$は正の適当に小さい定数
+</code></pre>
+</li>
+<li>
+<p>ポテンシャルは n で微分して:
+$$v_{Ha}=\int \frac{n(x')}{\sqrt{(x-x')^2+\varepsilon}}dx'$$</p>
+</li>
+</ul>
+<h2><a class="header" href="#実装-4" id="実装-4">実装</a></h2>
+<pre><code class="language-Python">def get_hatree(nx, x, eps=1e-1):
+    h = x[1] - x[0]
+    energy = np.sum(nx[None, :] * nx[:,None] * h**2 / np.sqrt((x[None, :]-x[:, None])**2 + eps) / 2)
+    potential = np.sum(nx[None, :] * h / np.sqrt((x[None, :]-x[:, None])**2 + eps), axis=-1)
+    return energy, potential
+</code></pre>
+<ul>
+<li>以上で今回欲しいハミルトニアンは定義できた</li>
+</ul>
+<h1><a class="header" href="#kohn-sham-方程式を解くself-consistency-loop" id="kohn-sham-方程式を解くself-consistency-loop">Kohn-Sham 方程式を解く：Self-consistency loop</a></h1>
+<ul>
+<li>KS 方程式をときたいが，相互作用のない場合のように一発では解けない
+<ul>
+<li>なぜなら，波動関数を求めたいが，ハミルトニアンの中に入っている電子密度は波動関数から導かれているから(循環参照!)</li>
+</ul>
+</li>
+<li>なので self-consistency loop で解く:</li>
+</ul>
+<ol start="0">
+<li>density を適当に初期化</li>
+<li>交換項，クーロン項を求める</li>
+<li>ハミルトニアンを求める</li>
+<li>波動関数と固有値を求める</li>
+<li>収束判定を満たしていない場合，density を計算して 2. へ</li>
+</ol>
+<ul>
+<li>つまり入力と出力が等しくなるまで(self-consistent になるまで)ループを回し続ける</li>
+</ul>
+<pre><code class="language-Python"># max_iter回計算しても収束していなければ失敗
+max_iter = 1000
+
+# エネルギーの変化がenergy_tolerance以下ならば収束とする
+energy_tolerance = 1e-8
+
+# 電子密度初期化
+nx = np.zeros(n_grid)
+
+for i in range(max_iter):
+    # ポテンシャルを求める
+    ex_energy, ex_potential = get_exchange(nx, x)
+    ha_energy, ha_potential = get_hatree(nx, x)
+
+    # Hamiltonian
+    H = -D2 / 2 + np.diagflat(ex_potential+ha_potential+x**2)
+
+    # 波動関数を求める
+    energy, psi = np.linalg.eigh(H)
+
+    # 収束判定 -&gt; もし収束していればおわり
+    if abs(energy_diff) &lt; energy_tolerance:
+        print(&quot;converged!&quot;)
+        break
+
+    # 電子密度を更新する
+    nx = get_nx(num_electron, psi, x)
+else:
+    print(&quot;not converged&quot;)
+</code></pre>
+<ul>
+<li>収束したら，<code>psi</code> や <code>nx</code> をプロットすると面白いかも</li>
+</ul>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/edffd699-b69b-5d90-38d7-3f4b702a36d8.png" alt="psi.png" /></p>
+<h1><a class="header" href="#jupyter-notebook" id="jupyter-notebook">Jupyter Notebook</a></h1>
+<ul>
+<li>https://github.com/tamuhey/python_1d_dft</li>
+</ul>
+<h1><a class="header" href="#動機" id="動機">動機</a></h1>
+<ul>
+<li>DFTの勉強をしたくてこの<a href="http://dcwww.camd.dtu.dk/%7Easkhl/files/python-dft-exercises.pdf">document</a>を見つけたのですが，コードが書かれていなかったので書いてみました.</li>
+</ul>
+<h1><a class="header" href="#参考文献など" id="参考文献など">参考文献など</a></h1>
+<ul>
+<li>http://dcwww.camd.dtu.dk/~askhl/files/python-dft-exercises.pdf</li>
+<li>https://www.researchgate.net/publication/226474665_A_Tutorial_on_Density_Functional_Theory
+<ul>
+<li>より詳しく書かれています</li>
+</ul>
+</li>
+</ul>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                    
+                    <a rel="prev" href="tinysearch_ja.html" class="mobile-nav-chapters previous"
+                        title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    
+
+                    
+                    <a rel="next" href="tokenizations.html" class="mobile-nav-chapters next"
+                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            
+            <a rel="prev" href="tinysearch_ja.html" class="nav-chapters previous" title="Previous chapter"
+                aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            
+
+            
+            <a rel="next" href="tokenizations.html" class="nav-chapters next" title="Next chapter"
+                aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+            
+        </nav>
+
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+    
+
+    
+
+    
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+    <script src="init.js" type="module"></script>
+    
+
+    <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+    <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- Custom JS scripts -->
+    
+
+    
+
+</body>
+
+</html>

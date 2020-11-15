@@ -1,0 +1,379 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>How to calculate the alignment between BERT and spaCy tokens effectively and robustly</title>
+    
+    
+
+
+    <!-- Custom HTML head -->
+    
+
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff" />
+
+    
+    <link rel="icon" href="favicon.svg">
+    
+    
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+    
+    <link rel="stylesheet" href="css/print.css" media="print">
+    
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+    
+    <link rel="stylesheet" href="fonts/fonts.css">
+    
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+    
+
+    
+</head>
+
+<body>
+    <!-- Provide site root to javascript -->
+    <script type="text/javascript">
+        var path_to_root = "";
+        var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+    </script>
+
+    <!-- Work around some values being stored in localStorage wrapped in quotes -->
+    <script type="text/javascript">
+        try {
+            var theme = localStorage.getItem('mdbook-theme');
+            var sidebar = localStorage.getItem('mdbook-sidebar');
+
+            if (theme.startsWith('"') && theme.endsWith('"')) {
+                localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+            }
+
+            if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+            }
+        } catch (e) { }
+    </script>
+
+    <!-- Set the theme before any content is loaded, prevents flash -->
+    <script type="text/javascript">
+        var theme;
+        try { theme = localStorage.getItem('mdbook-theme'); } catch (e) { }
+        if (theme === null || theme === undefined) { theme = default_theme; }
+        var html = document.querySelector('html');
+        html.classList.remove('no-js')
+        html.classList.remove('light')
+        html.classList.add(theme);
+        html.classList.add('js');
+    </script>
+
+    <!-- Hide / unhide sidebar before it is displayed -->
+    <script type="text/javascript">
+        var html = document.querySelector('html');
+        var sidebar = 'hidden';
+        if (document.body.clientWidth >= 1080) {
+            try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch (e) { }
+            sidebar = sidebar || 'visible';
+        }
+        html.classList.remove('sidebar-visible');
+        html.classList.add("sidebar-" + sidebar);
+    </script>
+
+    <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <div class="sidebar-scrollbox">
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="1d_dft.html">概要</a></li><li class="chapter-item expanded "><a href="tokenizations.html" class="active">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
+        </div>
+        <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+    </nav>
+
+    <div id="page-wrapper" class="page-wrapper">
+
+        <div class="page">
+            
+            <div id="menu-bar-hover-placeholder"></div>
+            <div id="menu-bar" class="menu-bar sticky bordered">
+                <div class="left-buttons">
+                    <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                        <i class="fa fa-paint-brush"></i>
+                    </button>
+                    <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="light">Light (default)</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="rust">Rust</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="coal">Coal</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="navy">Navy</button></li>
+                        <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button>
+                        </li>
+                    </ul>
+                    
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                        aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                        aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    
+                </div>
+
+                <h1 class="menu-title"></h1>
+
+                <div class="right-buttons">
+                    
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    
+                    
+                </div>
+            </div>
+
+            
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                        placeholder="Search this book ..." aria-controls="searchresults-outer"
+                        aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+            
+
+            <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+            <script type="text/javascript">
+                document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                    link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                });
+            </script>
+
+            <div id="content" class="content">
+                <main>
+                    <h1><a class="header" href="#how-to-calculate-the-alignment-between-bert-and-spacy-tokens-effectively-and-robustly" id="how-to-calculate-the-alignment-between-bert-and-spacy-tokens-effectively-and-robustly">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></h1>
+<p><img src="https://gitcdn.link/repo/tamuhey/tokenizations/master/img/demo.png" alt="" /></p>
+<p>site: https://tamuhey.github.io/tokenizations/</p>
+<p>Natural Language Processing (NLP) has made great progress in recent years because of neural networks, which allows us to solve various tasks with end-to-end architecture.
+However, many NLP systems still requires language-specific pre- and post-processing, especially in tokenizations.
+In this article, I describe an algorithm which simplifies calculating of correspondence between tokens (e.g. BERT vs. spaCy), one such process. 
+And I introduce Python and Rust libraries that implement this algorithm.</p>
+<p>Here is the library and the demo site links:</p>
+<ul>
+<li>repo: https://github.com/tamuhey/tokenizations</li>
+<li>demo: https://tamuhey.github.io/tokenizations/</li>
+</ul>
+<h1><a class="header" href="#what-is-alignment-of-tokens-and-why-is-it-necessary" id="what-is-alignment-of-tokens-and-why-is-it-necessary">What is &quot;alignment&quot; of tokens and Why is it necessary?</a></h1>
+<p>Suppose we want to combine BERT-based named entity recognition (NER) model with rule-based NER model buit on top of spaCy.
+Although BERT's NER exhibits <a href="http://nlpprogress.com/english/named_entity_recognition.html">extremely high performance</a>, 
+it is usually combined with rule-based approaches for practical purposes.
+In such cases, what often bothers us is that tokens of spaCy and BERT are different, even if the input sentences are the same.
+For example, let's say the input sentence is &quot;John Johanson 's house&quot;; BERT tokenizes this sentence like <code>[&quot;john&quot;, &quot;johan&quot;, &quot;##son&quot;, &quot;'&quot;, &quot;s&quot;, &quot;house&quot;]</code> and spaCy tokenizes it like <code>[&quot;John&quot;, &quot;Johanson&quot;, &quot;'s&quot;, &quot;house&quot;]</code>.
+In order to combine the outputs, we need to calculate the correspondence between the two different token sequences.
+This correspondence is the &quot;alignment&quot;.</p>
+<h1><a class="header" href="#how-to-calculate-the-alignment" id="how-to-calculate-the-alignment">How to calculate the alignment?</a></h1>
+<p>First, let's sort out the problem.
+Looking at the previous example, it can be said that two different token sequences have the following characteristics:</p>
+<ol>
+<li>Splitted in different offsets</li>
+<li>Normalized (e.g. lowercase, unicode normalization, dropping accents...)</li>
+<li>Added noise (meta symbol '#' in the previous case)</li>
+</ol>
+<p>If the token sequences differ only in <em>1.</em>, it can be easily solved, because we just need to compare the letters in order from the beginning.
+In fact, <code>spacy.gold.align</code>, which <a href="https://github.com/explosion/spaCy/pull/4526">I implemented previously</a>, is based on this algorithm.</p>
+<p>However, when the features <em>2.</em> and <em>3.</em> are taken into account, the problem suddenly becomes more difficult.
+If you want to deal with the previous example, it is relatively easily solved by lowercasing (e.g. A -&gt; a) and removing meta symbols (e.g. &quot;#&quot; -&gt; &quot;&quot;), but this depends on each tokenizers and isn't general-purpose method.
+Of course, we want a generic implementation that <strong>works for any tokenizers</strong>.</p>
+<p>Let's think about how to deal with <em>2.</em> and <em>3.</em>.</p>
+<h2><a class="header" href="#normalization" id="normalization">Normalization</a></h2>
+<p>In order to compare letters, we need to normalize the input tokens at first.
+This is because even though two letters may look the same, the underlying data may be different.
+There are variety of normalization methods which is used in NLP. For example:</p>
+<ul>
+<li><a href="https://unicode.org/faq/normalization.html">Unicode normalizations</a></li>
+<li>Dropping accents (&quot;å&quot; -&gt; &quot;a&quot;)</li>
+<li>Lowercasing (&quot;A&quot; -&gt; &quot;a&quot;)</li>
+</ul>
+<p>Unicode normalizations are defined in Unicode Standard.
+There are 4 types of Unicode normalizations: NFC, NFD, NFKC, NFKD.
+Of these, in NFKD, letters are decomposed based on compatibility, 
+and the number of letter types are the least and the probability 
+of matching is highest among the four methods. (see <a href="https://unicode.org/faq/normalization.html">Unicode document</a> for detail).
+For example, you can detect the letter &quot;a&quot; is a part of &quot;å&quot; with NFKD, but not with NFKC.</p>
+<p><img src="https://user-images.githubusercontent.com/24998666/81841036-c87bce00-9584-11ea-9d8a-e53689f0de7b.png" alt="" /></p>
+<p>Thus, we first normalize the intput tokens in NFKD form. 
+Then, we lowercase all letters because lowercasing is also often used in NLP.</p>
+<h2><a class="header" href="#compare-noisy-texts" id="compare-noisy-texts">Compare noisy texts</a></h2>
+<p>Now we can compare almost all tokens thanks to NFKD and lowercasing, but they still contain some noise (e.g. &quot;#&quot;),
+so we cannot completely compare all letters in tokens.
+How to properly ignore the noises and compare all letters?
+I racked my brain for few days trying to solve this problem.</p>
+<p>Then, I came up with a solution based on a tool that I use every day.
+It is <strong>diff</strong>.
+diff is a tool that compares two texts and outputs the mismatches.
+It is built in <code>git</code> as <code>git diff</code>, and you can display the charcter-level correspondence as follows:</p>
+<p><img src="https://user-images.githubusercontent.com/24998666/81947250-4ac6c980-963b-11ea-86ad-589bc3dad891.png" alt="image" /></p>
+<p>In our case, what we want to know is the agreement part, not the difference, but these are pretty much the same thing.
+So, what kind of algorithms is <code>diff</code> based on?</p>
+<p>According to the <a href="https://git-scm.com/docs/git-diff">git diff documentation</a>, it is based on <a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>.
+Myers' algorithm is one of the dynamic programming methods that computes the shortest path of what is called edit graph.
+It works very fast especially if the difference of the two inputs is small.
+For now, what we want to compare are almost identical, so we can get the correspondence of the letters very quickly.</p>
+<p>In short, it turns out that Myers' algorithm helps us to get the correspondens of the letters in two sequence of tokens, while properly ignoring some noises.</p>
+<h2><a class="header" href="#overview-of-the-algorithm" id="overview-of-the-algorithm">Overview of the algorithm</a></h2>
+<p>The considerations so far have shown that suitale normalizations and character-based diff gives us a generic method for computing
+the alignment of two token sequences.
+Let's summarize the specific steps briefly.</p>
+<p>Let <code>tokens_a</code> and <code>tokens_b</code> be token sequences of type <code>List[str]</code> to be compared. For example, <code>tokens_a = [&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;]</code>.</p>
+<ol>
+<li>Normalize all tokens with <code>NFKD</code> and lowercasing.</li>
+</ol>
+<p>For example, <code>&quot;Foo&quot; -&gt; &quot;foo&quot;</code></p>
+<ol start="2">
+<li>Concatenate the tokens into one string and let the results be <code>cat_a</code> and <code>cat_b</code> respectively. </li>
+</ol>
+<p>For example, <code>cat_a = &quot;&quot;.join(tokens_a)</code> in Python.</p>
+<ol start="3">
+<li>Get the character based diff between the strings <code>cat_a</code> and <code>cat_b</code>.</li>
+</ol>
+<p>The character based diff can be calculated with <a href="http://www.xmailserver.org/diff2.pdf">Myers' algorithm</a>.</p>
+<ol start="4">
+<li>Converts the caracter-based diff to a token-based diff.</li>
+</ol>
+<p>This is relatively easy to calculate because we know the mapping between the characters and tokens in step 2.</p>
+<h1><a class="header" href="#implementation" id="implementation">Implementation</a></h1>
+<p><a href="https://github.com/tamuhey/tokenizations">Here is the repository</a> that implements this algorithm.
+This library, <code>tokenizations</code>, is implemented with <strong>Rust</strong> and provides a <strong>Python</strong> binding.</p>
+<p>For example, you can use the Python library as follows:</p>
+<pre><code class="language-Python"># `$ pip install pytokenizations` to install the package
+import tokenizations
+
+tokens_a = [&quot;John&quot;, &quot;Johanson&quot;, &quot;'s&quot;, &quot;house&quot;]
+tokens_b = [&quot;john&quot;, &quot;johan&quot;, &quot;##son&quot;, &quot;'&quot;, &quot;s&quot;, &quot;house&quot;]
+a2b, b2a = tokenizations.get_alignments(tokens_a, tokens_b)
+
+for i in range(len(tokens_a)):
+    print(tokens_a[i])
+    for j in a2b[i]:
+        print(&quot;    &quot;, tokens_b[j])
+</code></pre>
+<pre><code>John
+     john
+Johanson
+     johan
+     ##son
+'s
+     '
+     s
+house
+     house
+</code></pre>
+<h1><a class="header" href="#conclusion" id="conclusion">Conclusion</a></h1>
+<p>In this article, I introduced an algorithm to align two token sequences that are produced by two different tokenizers.
+The title mentions spaCy and BERT, but this algorithm can be applied to any tokenizers.
+Also, it can be useful to apply NLP methods to noisy texts which contains HTML tags for example:
+remove the tags, apply the methods, then calculate the alignment for the output and original text.
+Here are the links to the library and demo.</p>
+<ul>
+<li>repo: https://github.com/tamuhey/tokenizations</li>
+<li>demo: https://tamuhey.github.io/tokenizations/</li>
+</ul>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                    
+                    <a rel="prev" href="1d_dft.html" class="mobile-nav-chapters previous"
+                        title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    
+
+                    
+                    <a rel="next" href="tokenizations_ja.html" class="mobile-nav-chapters next"
+                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            
+            <a rel="prev" href="1d_dft.html" class="nav-chapters previous" title="Previous chapter"
+                aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            
+
+            
+            <a rel="next" href="tokenizations_ja.html" class="nav-chapters next" title="Next chapter"
+                aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+            
+        </nav>
+
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+    
+
+    
+
+    
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+    <script src="init.js" type="module"></script>
+    
+
+    <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+    <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- Custom JS scripts -->
+    
+
+    
+
+</body>
+
+</html>
