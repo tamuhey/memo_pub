@@ -5,9 +5,10 @@ build-dir = "docs"
 no-section-label = true
 site-url = "memo_pub"
 google-analytics = "G-EYPH0N95MV"
+google-ads = "ca-pub-9435185600054700"
 mathjax-support = true
 git-repository-url = "https://github.com/tamuhey"
 [output.html.fold]
-enable=true
+enable = true
 [output.html.print]
 enable = false
