@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title></title>
+    
+    <meta name="robots" content="noindex" />
+    
+    
+
+
+    <!-- Custom HTML head -->
+    
+
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff" />
+
+    
+    <link rel="icon" href="favicon.svg">
+    
+    
+    <link rel="shortcut icon" href="favicon.png">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+    
+    <link rel="stylesheet" href="css/print.css" media="print">
+    
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+    
+    <link rel="stylesheet" href="fonts/fonts.css">
+    
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+    
+
+    
+</head>
+
+<body>
+    <!-- Provide site root to javascript -->
+    <script type="text/javascript">
+        var path_to_root = "";
+        var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+    </script>
+
+    <!-- Work around some values being stored in localStorage wrapped in quotes -->
+    <script type="text/javascript">
+        try {
+            var theme = localStorage.getItem('mdbook-theme');
+            var sidebar = localStorage.getItem('mdbook-sidebar');
+
+            if (theme.startsWith('"') && theme.endsWith('"')) {
+                localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+            }
+
+            if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+            }
+        } catch (e) { }
+    </script>
+
+    <!-- Set the theme before any content is loaded, prevents flash -->
+    <script type="text/javascript">
+        var theme;
+        try { theme = localStorage.getItem('mdbook-theme'); } catch (e) { }
+        if (theme === null || theme === undefined) { theme = default_theme; }
+        var html = document.querySelector('html');
+        html.classList.remove('no-js')
+        html.classList.remove('light')
+        html.classList.add(theme);
+        html.classList.add('js');
+    </script>
+
+    <!-- Hide / unhide sidebar before it is displayed -->
+    <script type="text/javascript">
+        var html = document.querySelector('html');
+        var sidebar = 'hidden';
+        if (document.body.clientWidth >= 1080) {
+            try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch (e) { }
+            sidebar = sidebar || 'visible';
+        }
+        html.classList.remove('sidebar-visible');
+        html.classList.add("sidebar-" + sidebar);
+    </script>
+
+    <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <div class="sidebar-scrollbox">
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item "><a href="libgit.html">libgit</a></li></ol>
+        </div>
+        <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+    </nav>
+
+    <div id="page-wrapper" class="page-wrapper">
+
+        <div class="page">
+            
+            <div id="menu-bar-hover-placeholder"></div>
+            <div id="menu-bar" class="menu-bar sticky bordered">
+                <div class="left-buttons">
+                    <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                        <i class="fa fa-paint-brush"></i>
+                    </button>
+                    <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="light">Light (default)</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="rust">Rust</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="coal">Coal</button></li>
+                        <li role="none"><button role="menuitem" class="theme"
+                                id="navy">Navy</button></li>
+                        <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button>
+                        </li>
+                    </ul>
+                    
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                        aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                        aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    
+                </div>
+
+                <h1 class="menu-title"></h1>
+
+                <div class="right-buttons">
+                    
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    
+                    
+                </div>
+            </div>
+
+            
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                        placeholder="Search this book ..." aria-controls="searchresults-outer"
+                        aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+            
+
+            <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+            <script type="text/javascript">
+                document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                    link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                });
+            </script>
+
+            <div id="content" class="content">
+                <main>
+                    <h1><a class="header" href="#memo" id="memo">memo</a></h1>
+<ul>
+<li>[2020/11/15] <a href="libgit.html">libgit.md                     : libgit</a></li>
+<li>[2020/11/15] <a href="tinysearch_ja.html">tinysearch_ja.md              : RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li>
+</ul>
+<h1><a class="header" href="#rustとwasmで静的ウェブページに日本語検索機能を追加する" id="rustとwasmで静的ウェブページに日本語検索機能を追加する">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></h1>
+<h1><a class="header" href="#概要" id="概要">概要</a></h1>
+<p>静的ウェブページ向け検索エンジン<a href="https://github.com/tinysearch/tinysearch">tinysearch</a>を<a href="https://github.com/google/rust_icu">rust_icu</a>のトークナイザ(<code>icu::BreakIterator</code>)を使って日本語対応させてみた。
+また、これをmdBookに組み込み、<a href="https://tamuhey.github.io/book-ja/">The Rust Programming Language 日本語版へ適用してみた</a> (chromiumのみ対応)</p>
+<p>実装: https://github.com/tamuhey/tinysearch/tree/japanese
+mdBookへの適用: https://github.com/tamuhey/mdBook/tree/tiny_search
+The Rust Programming Language 日本語版への適用例: https://tamuhey.github.io/book-ja/</p>
+<h1><a class="header" href="#tinysearch" id="tinysearch">tinysearch</a></h1>
+<p><a href="https://github.com/tinysearch/tinysearch">tinysearch</a>は静的ウェブページ向け検索エンジンです。Rust製であり、<a href="https://lunrjs.com/">lunr.js</a>や<a href="http://elasticlunr.com/">elasticlunr</a>よりもインデックスファイルサイズが遥かに小さくなることが特長です。
+しかし、残念なことに日本語検索に対応していません。以下のように文章を空白区切りでトークナイズし、インデックスに単語を登録しているからです:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>cleanup(strip_markdown(&amp;content))
+                        .split_whitespace()
+<span class="boring">}
+</span></code></pre></pre>
+<p>https://github.com/tinysearch/tinysearch/blob/e02fb592e80222033bd3b4cf6e524eefa9af4693/bin/src/storage.rs#L52</p>
+<p>英語なら大体動きますが、日本語だとほとんど動きません。今回はこの部分を改良していき、日本語に対応させてみます。</p>
+<h1><a class="header" href="#トークナイザ-icubreakiterator" id="トークナイザ-icubreakiterator">トークナイザ: icu::BreakIterator</a></h1>
+<p>では日本語を分割できるトークナイザを適当に選んでインデックスを生成すれば良いかというと、そうではありません。インデックス生成時と、実際に検索するときに用いるトークナイザの分割結果を一貫させる必要があるからです。そうでなければ単語分割結果が異なってしまい、うまくインデックスにヒットしなくなり検索精度が落ちます。</p>
+<p>例えば<a href="https://github.com/mattico/elasticlunr-rs">elasticlunr-rs</a>ではトークナイザに<a href="https://github.com/lindera-morphology/lindera">lindera</a>を使っているので、同じ挙動のトークナイザをフロントエンドで使おうとすると、linderaの辞書である<code>ipadic</code>をフロントエンドに持ってくる必要があります。辞書はサイズがとても大きいので、ウェブページのサイズのほとんどすべてをトークナイザ用のファイルが占めることになってしまいます。これはあまりいい方法ではなさそうです。
+ではフロントエンドで簡単に単語分割をするにはどうすればいいでしょうか？</p>
+<p>実は主要なブラウザにはデフォルトで単語分割機能が入っています。試しにこの文章をダブルクリックしてみてください。空白で区切られていないにもかかわらず、文全体ではなく単語がハイライトされたはずです。
+例えば、Chromiumではこの文分割機能を<code>Intl.v8BreakIterator</code>から使うことができます(<a href="https://stackoverflow.com/questions/61672829/how-does-chrome-decide-what-to-highlight-when-you-double-click-japanese-text">参考</a>)。<code>Intl.v8BreakIterator</code>はunicode-orgの<a href="https://github.com/unicode-org/icu">ICU</a>にある<a href="https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1BreakIterator.html">icu::BreakIterator</a>のラッパーで、<a href="http://www.unicode.org/reports/tr29/">UAX#29</a>に基づいて単語分割をします。</p>
+<p>そして嬉しいことに、<a href="https://github.com/google/rust_icu">rust_icu</a>というCrateにこの<code>icu::BreakIterator</code>が最近実装されました。つまりインデックス生成時には<code>rust_icu</code>を、フロントでは<code>Intl.v8BreakIterator</code>を使えば、インデックス生成時と検索時で一貫した単語分割結果を得られるのです。
+V8依存になってしまいますが、今回はこれを使います。</p>
+<h1><a class="header" href="#インデックス生成時のトークナイザの置き換え" id="インデックス生成時のトークナイザの置き換え">インデックス生成時のトークナイザの置き換え</a></h1>
+<p>まずはインデックス生成時のトークナイザを<a href="https://github.com/google/rust_icu">rust_icu</a>で置き換えていきます。
+こんな感じでテキストを分割する関数を作ればよいです:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use rust_icu::brk;
+use rust_icu::sys;
+
+pub fn tokenize(text: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; {
+    let iter =
+        brk::UBreakIterator::try_new(sys::UBreakIteratorType::UBRK_WORD, &quot;en&quot;, text).unwrap();
+    let mut ids = text.char_indices().skip(1);
+    iter.scan((0, 0), move |s, x| {
+        let (l, prev) = *s;
+        let x = x as usize;
+        if let Some((r, _)) = ids.nth(x - prev - 1) {
+            *s = (r, x);
+            Some(&amp;text[l..r])
+        } else {
+            Some(&amp;text[l..])
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>rust_icu::brk::UBreakIterator</code>は文字境界位置のインデックスを生成するイテレータです。インデックスはバイト数ではなく文字数で返されるので、そのままtextをスライスすることはできません。<code>char_indices</code>を使い、バイト境界を求めてから部分文字列を返します。
+ちなみにこれをビルドするには、nightlyのrustcとicuの開発環境をインストールする必要があります（参考: https://github.com/google/rust_icu#required ）。</p>
+<h1><a class="header" href="#検索時のトークナイザの置き換え" id="検索時のトークナイザの置き換え">検索時のトークナイザの置き換え</a></h1>
+<p>次にフロントエンドのトークナイザを置き換えます(<a href="https://stackoverflow.com/questions/61672829/how-does-chrome-decide-what-to-highlight-when-you-double-click-japanese-text">参考</a>):</p>
+<pre><code class="language-javascript">function tokenize(text) {
+    text = text.toLowerCase()
+    let it = Intl.v8BreakIterator([&quot;ja&quot;], { type: 'word' })
+    it.adoptText(text)
+    let words = []
+    let cur = 0, prev = 0
+    while (cur &lt; text.length) {
+        cur = it.next()
+        words.push(text.substring(prev, cur))
+        prev = cur
+    }
+    return words.join(&quot; &quot;)
+}
+</code></pre>
+<p>先程と同様、<code>Intl.v8BreakIterator</code>は文字境界位置を返すので、それをもとに部分文字列を抽出します。
+最後に空白で結合し、tinysearchに渡します。ここはtinysearchの方を改造して、入力に単語列を取るようにしても良いかもしれません。</p>
+<h1><a class="header" href="#demo" id="demo">Demo</a></h1>
+<p>以上でtinysearchの改造は終わりです。tinysearchコマンドの使い方自体は変えていないので、元のコマンドと同じ方法で検索用アセットを生成できます。
+<a href="https://tamuhey.github.io/tinysearch/">こちら</a>が日本語対応版のデモサイトです。「日本」と打つと、ちゃんと検索結果が表示されているのがわかります。</p>
+<h1><a class="header" href="#mdbookに日本語対応tinysearchを導入" id="mdbookに日本語対応tinysearchを導入">mdBookに日本語対応tinysearchを導入</a></h1>
+<p><a href="https://github.com/rust-lang/mdBook">mdBook</a>は日本語に対応していません。検索機能には<a href="https://github.com/mattico/elasticlunr-rs">elasticlunr-rs</a>が使われていますが、これにパッチを当てていく方針はかなり大変そうです（参考: <a href="https://qiita.com/dalance/items/0a435d66e29f505faf6b">mdBookを日本語検索に対応させたかった</a>)。</p>
+<p>そこでmdBookの検索機能をelasticlunrからtinysearchに置き換え、日本語対応させてみました。(<a href="https://github.com/tamuhey/mdbook/tree/tiny_search">repo</a>)
+試しにRustの日本語ドキュメントをビルドしたものがこちらです: https://tamuhey.github.io/book-ja/
+日本語、英語両方ともうまく検索できているように見えます。</p>
+<p>また、インデックスとwasm moduleのファイルサイズの合計が592KBになりました。オリジナルのmdBookで生成されたインデックスファイルのサイズは5.8MBなので、約1/10程度です。tinysearchの効果が発揮されたようです。</p>
+<h1><a class="header" href="#まとめと課題" id="まとめと課題">まとめと課題</a></h1>
+<p><code>v8.BreakIterator</code>と<code>rust_icu::BreakIterator</code>を使って、tinysearchを日本語対応させてみました。
+また、mdBookの検索機能をelasticlunrから今回改造したtinysearchに置き換え、試しに<a href="https://tamuhey.github.io/book-ja/">日本語Rustドキュメントを生成</a>してみました。うまく日本語検索できているようです。</p>
+<p>しかし、いくつか課題があります。</p>
+<h2><a class="header" href="#1-mdbookの検索結果に本文の対応箇所が表示されない" id="1-mdbookの検索結果に本文の対応箇所が表示されない">1. mdBookの検索結果に本文の対応箇所が表示されない</a></h2>
+<p>これは面倒でやっていません。インデックスファイルに本文を登録しておき、wasm module側で適当に該当箇所を返すような改造が必要です。</p>
+<h2><a class="header" href="#2-v8依存" id="2-v8依存">2. V8依存</a></h2>
+<p>今回のやりかたの一番大きな問題です。SafariやFirefoxでは完全には動きません。（検索ワードが単語分割結果と偶然一致していれば検索されます）
+これについては、3つの解決策があると思います。</p>
+<h3><a class="header" href="#intlsegmenterの実装を待つ" id="intlsegmenterの実装を待つ"><code>Intl.Segmenter</code>の実装を待つ</a></h3>
+<p>ECMAScriptに<a href="https://github.com/tc39/proposal-intl-segmenter">Intl.Segmenter</a>が提案されています。<code>v8BreakIterator</code>とAPIは異なりますが、ベースは<code>icu::BreakIterator</code>であり分割結果は同じです。既にChrome 87には実装されており、<a href="https://trac.webkit.org/changeset/266180/webkit">webkit</a>や<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1423593">Firefox</a>の方でも開発が進んでいるようです。
+<code>Intl.Segmenter</code>が実装されれば、これを用いてトークナイズ処理を実装することで、V8依存をなくすことができます。</p>
+<h3><a class="header" href="#各jsエンジンごとにそれぞれのトークナイズ処理を実装する" id="各jsエンジンごとにそれぞれのトークナイズ処理を実装する">各JSエンジンごとにそれぞれのトークナイズ処理を実装する</a></h3>
+<p>V8で<code>Intl.v8BreakIterator</code>を使ったように、それぞれのJSエンジンで同じように実装すれば動くかと思います。ただし、他のJSエンジンがV8と同じように<code>icu::BreakIterator</code>をAPIとして公開していればの話ですが。（ちゃんと調べてません）</p>
+<h3><a class="header" href="#トークナイズをngramにする" id="トークナイズをngramにする">トークナイズをngramにする</a></h3>
+<p>トークナイズ処理をngramにすれば、V8への依存を消すことができます。
+しかし、検索精度の面などで新たに問題が生じそうです。</p>
+<p>ということで、<code>Intl.Segmenter</code>が実装されるのを気長に待ちましょう。</p>
+<h1><a class="header" href="#reference" id="reference">Reference</a></h1>
+<ul>
+<li><a href="https://github.com/tinysearch/tinysearch">tinysearch</a></li>
+<li><a href="https://lunrjs.com/">lunr</a></li>
+<li><a href="http://elasticlunr.com/">elasticlunr</a></li>
+<li><a href="https://github.com/mattico/elasticlunr-rs">elasticlunr-rs</a></li>
+<li><a href="https://github.com/lindera-morphology/lindera">lindera</a></li>
+<li><a href="https://github.com/unicode-org/icu">icu</a></li>
+<li><a href="http://www.unicode.org/reports/tr29/">Unicode® Standard Annex #29 UNICODE TEXT SEGMENTATION</a></li>
+<li><a href="https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1BreakIterator.html">icu::BreakIterator</a></li>
+<li><a href="https://github.com/google/rust_icu">rust_icu</a></li>
+<li><a href="https://stackoverflow.com/questions/61672829/how-does-chrome-decide-what-to-highlight-when-you-double-click-japanese-text">How does Chrome decide what to highlight when you double-click Japanese text? - StackOverflow</a></li>
+<li><a href="https://tamuhey.github.io/tinysearch/">tinysearch japanese demo</a></li>
+<li><a href="https://github.com/tamuhey/tinysearch/tree/japanese">tinysearch japanese branch</a></li>
+<li><a href="https://github.com/rust-lang/mdBook">mdBook</a></li>
+<li><a href="https://github.com/tamuhey/mdbook/tree/tiny_search">mdBook with tinysearch</a></li>
+<li><a href="https://doc.rust-lang.org/book/">Rust book</a></li>
+<li><a href="https://tamuhey.github.io/book-ja/">Rust book-ja with tinysearch</a></li>
+<li><a href="https://unicode-org.github.io/icu/userguide/howtouseicu.html">How to use ICU</a></li>
+<li><a href="https://github.com/tc39/proposal-intl-segmenter">Intl.Segmenter: Unicode segmentation in JavaScript</a></li>
+</ul>
+<h2><a class="header" href="#commit-dateでファイルをソートする" id="commit-dateでファイルをソートする">commit dateでファイルをソートする</a></h2>
+<ul>
+<li>how to
+<ul>
+<li>対象のpathsをrepo.indexで取得
+<ul>
+<li>これはglobとかでもいい</li>
+</ul>
+</li>
+<li>revwalkをtime orderで取得</li>
+<li>各commitに対してtreeを取得し、すべてのpathについて<code>get_path</code>でblob取得</li>
+<li>blob idが異なっていればそのcommitで変更があったということがわかる</li>
+</ul>
+</li>
+<li>logの実装を見たが、diffoptsにpathsを設定してparentsとの差分を取得していたので代替似たようなことをしなければならないらしい</li>
+</ul>
+
+                </main>
+
+                <nav class="nav-wrapper" aria-label="Page navigation">
+                    <!-- Mobile navigation buttons -->
+                    
+
+                    
+
+                    <div style="clear: both"></div>
+                </nav>
+            </div>
+        </div>
+
+        <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            
+
+            
+        </nav>
+
+    </div>
+
+    
+
+    
+
+    
+
+    
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+    
+
+    
+
+    
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+    <script src="init.js" type="module"></script>
+    
+
+    <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+    <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- Custom JS scripts -->
+    
+
+    
+    
+    <script type="text/javascript">
+        window.addEventListener('load', function () {
+            window.setTimeout(window.print, 100);
+        });
+    </script>
+    
+    
+
+</body>
+
+</html>
