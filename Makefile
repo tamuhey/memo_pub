@@ -1,4 +1,4 @@
-.PHONY publish
+.PHONY: publish
 publish: docs/index.html
 	git push origin gh-pages
 docs/index.html:
