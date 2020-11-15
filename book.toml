@@ -1,0 +1,7 @@
+[build]
+create-missing = true
+[output.html]
+no-section-label = true
+[output.html.fold]
+enable=true
+
