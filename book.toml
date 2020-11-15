@@ -3,6 +3,7 @@ create-missing = true
 build-dir = "docs"
 [output.html]
 no-section-label = true
+site-url = "memo_pub"
 [output.html.fold]
 enable=true
 

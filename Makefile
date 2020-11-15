@@ -7,4 +7,3 @@ publish: docs/index.html
 docs/index.html: $(shell find . -name '*.md' -print)
 	git checkout gh-pages
 	mdnote build
-	cp init.js docs/
