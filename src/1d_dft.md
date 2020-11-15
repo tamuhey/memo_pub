@@ -1,21 +1,21 @@
-# 概要
+## 概要
 
 - Jupyter Notebook: https://github.com/tamuhey/python_1d_dft
 - 第一原理計算の勉強がてら Python コードを書いた
 - 1 次元調和振動子の Kohn-Sham 方程式を解くことを目指す
 
-# 何を計算するか
+## 何を計算するか
 
 - 1 次元調和振動子について，下のハミルトニアンの固有値問題を解く
 
 $$\hat{H}=-\frac{1}{2}\frac{d^2}{dx^2}+v(x)$$
 $$v(x)=v_{Ha}(x)+v_{LDA}(x)+x^2$$
 
-# 微分作用素の行列表現
+## 微分作用素の行列表現
 
 - まずは運動項$\frac{d^2}{dx^2}$の行列表現を求める
 
-## 1階微分
+### 1階微分
 
 $$(\frac{dy}{dx})_{i}=\frac{y _{i+1}-{y _{i}}}{h}$$
 
@@ -27,7 +27,7 @@ $$(\frac{dy}{dx}) _ {i}=D_{ij} y _{j}$$
 
 $\delta_{ij}$はクロネッカーのデルタで，第 3 式はアインシュタイン縮約を用いている
 
-### 実装
+#### 実装
 
 ```python
 n_grid = 200
@@ -37,7 +37,7 @@ D = -np.eye(n_grid) + np.diagflat(np.ones(n_grid-1), 1)
 D /= h
 ```
 
-## 2 階微分
+### 2 階微分
 
 上と同じようにして
 $$D^2_{ij}=\frac{\delta_{i+1,j}-2\delta_{i,j}+\delta_{i-1,j}}{h^2}$$
@@ -47,7 +47,7 @@ $$D^2_{ij}=-D_{ik}D_{jk}$$
 
 (ただし端を適当に処理する必要がある)
 
-### 実装
+#### 実装
 
 - 2 行で書ける(!)
 
@@ -70,7 +70,7 @@ plt.legend()
 
 ![sin.png](https://qiita-image-store.s3.amazonaws.com/0/259703/5c8004f0-d1af-bd8f-3ee6-4e9d9ddd9eb1.png)
 
-# 調和振動子のポテンシャル項
+## 調和振動子のポテンシャル項
 
 - 調和振動子のポテンシャル項$v_{ext}=x^2$を導入する:
   $$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$
@@ -82,7 +82,7 @@ $v_{ext}(x)$の行列表現を$X$とする.
 X = np.diagflat(x**2)
 ```
 
-## 解を求めてみる
+### 解を求めてみる
 
 - 上の２つの項を合わせれば，相互作用のない 1 次元調和振動子の波動関数を求める事ができる
 
@@ -98,7 +98,7 @@ for i in range(5):
     plt.legend(loc=1)
 ```
 
-# 電子密度
+## 電子密度
 
 - クーロン，ハートリー相互作用や LDA 交換項を入れたいが，これらは密度の汎関数
 - なのでまずは density を考える
@@ -110,7 +110,7 @@ for i in range(5):
 
 - 電子は各状態につき 2 つまで入ることができる(スピン)
 
-## 実装
+### 実装
 
 ```Python
 def integral(x, y, axis=0):
@@ -132,7 +132,7 @@ def get_nx(num_electron, psi, x):
     return res
 ```
 
-# Exchange energy
+## Exchange energy
 
 - 交換相互作用について考える (電子相関は面倒なので今回はパス)
 - local density approximation (LDA) を用いると，以下のような汎関数となる:
@@ -143,7 +143,7 @@ $$E_X^{LDA}[n] = -\frac{3}{4} \left(\frac{3}{\pi}\right)^{1/3} \int n^{4/3} dx$$
 
 $$v_X^{LDA}[n] = \frac{\partial E_X^{LDA}}{\partial n} = - \left(\frac{3}{\pi}\right)^{1/3} n^{1/3}$$
 
-## 実装
+### 実装
 
 ```Python
 def get_exchange(nx, x):
@@ -152,7 +152,7 @@ def get_exchange(nx, x):
     return energy, potential
 ```
 
-# coulomb potential
+## coulomb potential
 
 - 1 次元の場合，3 次元の表式をそのまま用いると発散してしまうので，ちょっとずるして以下のように定義する
   $$E_{Ha}=\frac{1}{2}\iint \frac{n(x)n(x')}{\sqrt{(x-x')^2+\varepsilon}}dxdx'$$
@@ -162,7 +162,7 @@ def get_exchange(nx, x):
 - ポテンシャルは n で微分して:
   $$v_{Ha}=\int \frac{n(x')}{\sqrt{(x-x')^2+\varepsilon}}dx'$$
 
-## 実装
+### 実装
 
 ```Python
 def get_hatree(nx, x, eps=1e-1):
@@ -174,7 +174,7 @@ def get_hatree(nx, x, eps=1e-1):
 
 - 以上で今回欲しいハミルトニアンは定義できた
 
-# Kohn-Sham 方程式を解く：Self-consistency loop
+## Kohn-Sham 方程式を解く：Self-consistency loop
 
 - KS 方程式をときたいが，相互作用のない場合のように一発では解けない
   - なぜなら，波動関数を求めたいが，ハミルトニアンの中に入っている電子密度は波動関数から導かれているから(循環参照!)
@@ -225,15 +225,11 @@ else:
 ![psi.png](https://qiita-image-store.s3.amazonaws.com/0/259703/edffd699-b69b-5d90-38d7-3f4b702a36d8.png)
 
 
-# Jupyter Notebook
+## Jupyter Notebook
 
 - https://github.com/tamuhey/python_1d_dft
 
-# 動機
-
-- DFTの勉強をしたくてこの[document](http://dcwww.camd.dtu.dk/~askhl/files/python-dft-exercises.pdf)を見つけたのですが，コードが書かれていなかったので書いてみました.
-
-# 参考文献など
+## Refs
 
 - http://dcwww.camd.dtu.dk/~askhl/files/python-dft-exercises.pdf
 - https://www.researchgate.net/publication/226474665_A_Tutorial_on_Density_Functional_Theory
