@@ -4,7 +4,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>概要</title>
+    <title>1d_dft</title>
     
     
 
@@ -97,7 +97,7 @@
 
     <nav id="sidebar" class="sidebar" aria-label="Table of contents">
         <div class="sidebar-scrollbox">
-            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item expanded "><a href="1d_dft.html" class="active">概要</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">commit dateでファイルをソートする</a></li></ol>
+            <ol class="chapter"><li class="chapter-item affix "><a href="index.html">memo</a></li><li class="chapter-item "><a href="tinysearch_ja.html">RustとWasmで静的ウェブページに日本語検索機能を追加する</a></li><li class="chapter-item expanded "><a href="1d_dft.html" class="active">1d_dft</a></li><li class="chapter-item "><a href="tokenizations.html">How to calculate the alignment between BERT and spaCy tokens effectively and robustly</a></li><li class="chapter-item "><a href="tokenizations_ja.html">2つの分かち書きの対応を計算する</a></li><li class="chapter-item "><a href="libgit.html">commit dateでファイルをソートする</a></li></ol>
         </div>
         <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
     </nav>
@@ -176,23 +176,23 @@
 
             <div id="content" class="content">
                 <main>
-                    <h1><a class="header" href="#概要" id="概要">概要</a></h1>
+                    <h2><a class="header" href="#概要" id="概要">概要</a></h2>
 <ul>
 <li>Jupyter Notebook: https://github.com/tamuhey/python_1d_dft</li>
 <li>第一原理計算の勉強がてら Python コードを書いた</li>
 <li>1 次元調和振動子の Kohn-Sham 方程式を解くことを目指す</li>
 </ul>
-<h1><a class="header" href="#何を計算するか" id="何を計算するか">何を計算するか</a></h1>
+<h2><a class="header" href="#何を計算するか" id="何を計算するか">何を計算するか</a></h2>
 <ul>
 <li>1 次元調和振動子について，下のハミルトニアンの固有値問題を解く</li>
 </ul>
 <p>$$\hat{H}=-\frac{1}{2}\frac{d^2}{dx^2}+v(x)$$
 $$v(x)=v_{Ha}(x)+v_{LDA}(x)+x^2$$</p>
-<h1><a class="header" href="#微分作用素の行列表現" id="微分作用素の行列表現">微分作用素の行列表現</a></h1>
+<h2><a class="header" href="#微分作用素の行列表現" id="微分作用素の行列表現">微分作用素の行列表現</a></h2>
 <ul>
 <li>まずは運動項$\frac{d^2}{dx^2}$の行列表現を求める</li>
 </ul>
-<h2><a class="header" href="#1階微分" id="1階微分">1階微分</a></h2>
+<h3><a class="header" href="#1階微分" id="1階微分">1階微分</a></h3>
 <p>$$(\frac{dy}{dx})_{i}=\frac{y _{i+1}-{y _{i}}}{h}$$</p>
 <p>とするなら
 $$D_{ij}=\frac{\delta_{i+1,j}-\delta_{i,j}}{h}$$
@@ -200,20 +200,20 @@ $$D_{ij}=\frac{\delta_{i+1,j}-\delta_{i,j}}{h}$$
 $$(\frac{dy}{dx}) _ {i}=D_{ij} y _{j}$$
 と書ける．（ただし端は定義できない)</p>
 <p>$\delta_{ij}$はクロネッカーのデルタで，第 3 式はアインシュタイン縮約を用いている</p>
-<h3><a class="header" href="#実装" id="実装">実装</a></h3>
+<h4><a class="header" href="#実装" id="実装">実装</a></h4>
 <pre><code class="language-python">n_grid = 200
 x = np.linspace(-5, 5, n_grid)
 h = x[1] - x[0]
 D = -np.eye(n_grid) + np.diagflat(np.ones(n_grid-1), 1)
 D /= h
 </code></pre>
-<h2><a class="header" href="#2-階微分" id="2-階微分">2 階微分</a></h2>
+<h3><a class="header" href="#2-階微分" id="2-階微分">2 階微分</a></h3>
 <p>上と同じようにして
 $$D^2_{ij}=\frac{\delta_{i+1,j}-2\delta_{i,j}+\delta_{i-1,j}}{h^2}$$</p>
 <p>これは 1 階微分演算子を用いて下のように書ける(転置に注意).
 $$D^2_{ij}=-D_{ik}D_{jk}$$</p>
 <p>(ただし端を適当に処理する必要がある)</p>
-<h3><a class="header" href="#実装-1" id="実装-1">実装</a></h3>
+<h4><a class="header" href="#実装-1" id="実装-1">実装</a></h4>
 <ul>
 <li>2 行で書ける(!)</li>
 </ul>
@@ -232,7 +232,7 @@ plt.plot(x[1:-1], D2.dot(y)[1:-1], label=&quot;D2&quot;)
 plt.legend()
 </code></pre>
 <p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/5c8004f0-d1af-bd8f-3ee6-4e9d9ddd9eb1.png" alt="sin.png" /></p>
-<h1><a class="header" href="#調和振動子のポテンシャル項" id="調和振動子のポテンシャル項">調和振動子のポテンシャル項</a></h1>
+<h2><a class="header" href="#調和振動子のポテンシャル項" id="調和振動子のポテンシャル項">調和振動子のポテンシャル項</a></h2>
 <ul>
 <li>調和振動子のポテンシャル項$v_{ext}=x^2$を導入する:
 $$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$</li>
@@ -241,7 +241,7 @@ $$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$</li>
 これは対角行列とすればよい．(1 行で書ける!)</p>
 <pre><code class="language-Python">X = np.diagflat(x**2)
 </code></pre>
-<h2><a class="header" href="#解を求めてみる" id="解を求めてみる">解を求めてみる</a></h2>
+<h3><a class="header" href="#解を求めてみる" id="解を求めてみる">解を求めてみる</a></h3>
 <ul>
 <li>上の２つの項を合わせれば，相互作用のない 1 次元調和振動子の波動関数を求める事ができる</li>
 </ul>
@@ -254,7 +254,7 @@ $$\hat{H} = \hat{T} = - \frac{1}{2} \frac{d^2}{dx^2} + x^2$$</li>
     plt.plot(x, psi_harm[:, i],  label=f&quot;{eig_harm[i]:.4f}&quot;)
     plt.legend(loc=1)
 </code></pre>
-<h1><a class="header" href="#電子密度" id="電子密度">電子密度</a></h1>
+<h2><a class="header" href="#電子密度" id="電子密度">電子密度</a></h2>
 <ul>
 <li>
 <p>クーロン，ハートリー相互作用や LDA 交換項を入れたいが，これらは密度の汎関数</p>
@@ -274,7 +274,7 @@ $$n(x)=\sum_n f_n \lvert \psi(x) \rvert ^2$$</p>
 <p>電子は各状態につき 2 つまで入ることができる(スピン)</p>
 </li>
 </ul>
-<h2><a class="header" href="#実装-2" id="実装-2">実装</a></h2>
+<h3><a class="header" href="#実装-2" id="実装-2">実装</a></h3>
 <pre><code class="language-Python">def integral(x, y, axis=0):
     dx = x[1] - x[0]
     return np.sum(y*dx, axis=axis)
@@ -293,7 +293,7 @@ def get_nx(num_electron, psi, x):
         res += ne*(psi**2)
     return res
 </code></pre>
-<h1><a class="header" href="#exchange-energy" id="exchange-energy">Exchange energy</a></h1>
+<h2><a class="header" href="#exchange-energy" id="exchange-energy">Exchange energy</a></h2>
 <ul>
 <li>交換相互作用について考える (電子相関は面倒なので今回はパス)</li>
 <li>local density approximation (LDA) を用いると，以下のような汎関数となる:</li>
@@ -303,13 +303,13 @@ def get_nx(num_electron, psi, x):
 <li>potential はこれを n によって微分することで求まる:</li>
 </ul>
 <p>$$v_X^{LDA}[n] = \frac{\partial E_X^{LDA}}{\partial n} = - \left(\frac{3}{\pi}\right)^{1/3} n^{1/3}$$</p>
-<h2><a class="header" href="#実装-3" id="実装-3">実装</a></h2>
+<h3><a class="header" href="#実装-3" id="実装-3">実装</a></h3>
 <pre><code class="language-Python">def get_exchange(nx, x):
     energy = -3./ 4 * (3./np.pi) ** (1./3) * integral(x, nx**(4./3))
     potential = -(3./np.pi) ** (1./3) * nx**(1./3)
     return energy, potential
 </code></pre>
-<h1><a class="header" href="#coulomb-potential" id="coulomb-potential">coulomb potential</a></h1>
+<h2><a class="header" href="#coulomb-potential" id="coulomb-potential">coulomb potential</a></h2>
 <ul>
 <li>
 <p>1 次元の場合，3 次元の表式をそのまま用いると発散してしまうので，ちょっとずるして以下のように定義する
@@ -322,7 +322,7 @@ $$E_{Ha}=\frac{1}{2}\iint \frac{n(x)n(x')}{\sqrt{(x-x')^2+\varepsilon}}dxdx'$$</
 $$v_{Ha}=\int \frac{n(x')}{\sqrt{(x-x')^2+\varepsilon}}dx'$$</p>
 </li>
 </ul>
-<h2><a class="header" href="#実装-4" id="実装-4">実装</a></h2>
+<h3><a class="header" href="#実装-4" id="実装-4">実装</a></h3>
 <pre><code class="language-Python">def get_hatree(nx, x, eps=1e-1):
     h = x[1] - x[0]
     energy = np.sum(nx[None, :] * nx[:,None] * h**2 / np.sqrt((x[None, :]-x[:, None])**2 + eps) / 2)
@@ -332,7 +332,7 @@ $$v_{Ha}=\int \frac{n(x')}{\sqrt{(x-x')^2+\varepsilon}}dx'$$</p>
 <ul>
 <li>以上で今回欲しいハミルトニアンは定義できた</li>
 </ul>
-<h1><a class="header" href="#kohn-sham-方程式を解くself-consistency-loop" id="kohn-sham-方程式を解くself-consistency-loop">Kohn-Sham 方程式を解く：Self-consistency loop</a></h1>
+<h2><a class="header" href="#kohn-sham-方程式を解くself-consistency-loop" id="kohn-sham-方程式を解くself-consistency-loop">Kohn-Sham 方程式を解く：Self-consistency loop</a></h2>
 <ul>
 <li>KS 方程式をときたいが，相互作用のない場合のように一発では解けない
 <ul>
@@ -385,15 +385,11 @@ else:
 <li>収束したら，<code>psi</code> や <code>nx</code> をプロットすると面白いかも</li>
 </ul>
 <p><img src="https://qiita-image-store.s3.amazonaws.com/0/259703/edffd699-b69b-5d90-38d7-3f4b702a36d8.png" alt="psi.png" /></p>
-<h1><a class="header" href="#jupyter-notebook" id="jupyter-notebook">Jupyter Notebook</a></h1>
+<h2><a class="header" href="#jupyter-notebook" id="jupyter-notebook">Jupyter Notebook</a></h2>
 <ul>
 <li>https://github.com/tamuhey/python_1d_dft</li>
 </ul>
-<h1><a class="header" href="#動機" id="動機">動機</a></h1>
-<ul>
-<li>DFTの勉強をしたくてこの<a href="http://dcwww.camd.dtu.dk/%7Easkhl/files/python-dft-exercises.pdf">document</a>を見つけたのですが，コードが書かれていなかったので書いてみました.</li>
-</ul>
-<h1><a class="header" href="#参考文献など" id="参考文献など">参考文献など</a></h1>
+<h2><a class="header" href="#refs" id="refs">Refs</a></h2>
 <ul>
 <li>http://dcwww.camd.dtu.dk/~askhl/files/python-dft-exercises.pdf</li>
 <li>https://www.researchgate.net/publication/226474665_A_Tutorial_on_Density_Functional_Theory
