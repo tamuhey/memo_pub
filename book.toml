@@ -3,7 +3,7 @@ create-missing = true
 build-dir = "docs"
 [output.html]
 no-section-label = true
-site-url = "memo_pub"
+site-url = "/memo_pub"
 google-analytics = "G-EYPH0N95MV"
 google-ads = "ca-pub-9435185600054700"
 mathjax-support = true
